@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,8 @@ import com.bezkoder.spring.login.payload.response.MessageResponse;
 import com.bezkoder.spring.login.repository.UserRepository;
 import com.bezkoder.spring.login.security.jwt.JwtUtils;
 import com.bezkoder.spring.login.security.services.UserDetailsImpl;
+
+import java.util.Optional;
 
 @CrossOrigin(
         allowCredentials = "true",
@@ -105,6 +108,27 @@ public class AuthController {
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
+
+    @GetMapping("/userInfo")
+    public Optional<User> getUserInfo() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        System.out.println(principal.toString());
+
+        if (principal instanceof UserDetails) {
+            UserDetails user = (UserDetails) principal;
+//            return user;
+            Optional<User> response = Optional.ofNullable(userRepository.findByUsername(user.getUsername()));
+
+            System.out.println(response.toString());
+            return response;
+        } else {
+            String username = principal.toString();
+            System.out.println(username);
+            System.out.println("naspa");
+            return null;
+        }
     }
 
     @PostMapping("/signout")

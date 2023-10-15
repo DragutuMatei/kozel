@@ -17,10 +17,6 @@ public class Web3Authentication extends AbstractAuthenticationToken {
     }
 
 
-    @Bean
-    public AuthenticationManager auth(UserDetailsServiceImpl users) {
-        return new ProviderManager(new Web3AuthenticationProvider(users));
-    }
     @Override
     public Object getPrincipal() {
         return address;

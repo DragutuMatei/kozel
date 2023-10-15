@@ -2,8 +2,10 @@ package com.bezkoder.spring.login.security;
 
 import com.bezkoder.spring.login.Metamask.Web3AuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -38,10 +40,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new AuthTokenFilter();
     }
 
+    @Autowired
+    private Web3AuthenticationProvider web3AuthenticationProvider;
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        authenticationManagerBuilder.authenticationProvider(web3AuthenticationProvider);
     }
 
     @Bean
@@ -60,7 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/api/auth/**", "/api/auth/challenge/{username}/{address}", "/api/auth/signin").permitAll()
+                .authorizeRequests().antMatchers("/api/auth/**", "/api/auth/challenge/{username}/{address}", "/api/auth/signin", "/api/auth/userInfo", "/api/auth/signup").permitAll()
                 .antMatchers("/api/test/**").permitAll()
                 .anyRequest().authenticated();
 
