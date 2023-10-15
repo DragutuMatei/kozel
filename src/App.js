@@ -44,8 +44,15 @@ const App = () => {
 
   const login = async () => {
     if (!wallet) {
-      await connect();
+      await connect({
+        autoSelect: {
+          label: "MetaMask",
+          disableModals: true,
+        },
+      });
       // sign();
+    } else {
+      sign();
     }
     console.log(wallet);
   };
@@ -168,6 +175,28 @@ const App = () => {
           >
             {" "}
             <span>Authenticate</span>
+          </button>
+          <button
+            onClick={async () => {
+              await axios_fara_cred
+                .get("http://localhost:8080/api/auth/userInfo")
+                .then((res) => {
+                  console.log(res);
+                });
+            }}
+          >
+            is auth?
+          </button>
+          <button
+            onClick={async () => {
+              await axios_fara_cred
+                .post("http://localhost:8080/api/auth/signout")
+                .then((res) => {
+                  console.log(res);
+                });
+            }}
+          >
+            logout
           </button>
           {error && <div className="text-red-500 text-center">{error}</div>}
         </div>
