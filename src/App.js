@@ -4,7 +4,7 @@ import injectedModule from "@web3-onboard/injected-wallets";
 import { init, useConnectWallet } from "@web3-onboard/react";
 import Web3 from "web3";
 import Afi from "./Afi";
-
+import axios from "axios";
 const injected = injectedModule();
 
 init({
@@ -30,8 +30,9 @@ const App = () => {
   const [authenticating, setAuthenticating] = useState(false);
   const [error, setError] = useState(null);
   const [auth, setAuth] = useState(null);
+  const [nonce, setNonce] = useState(null)
 
-  const api = Afi();
+  const api = new Afi();
 
   // useEffect(() => {
   //   if (!wallet) connect();
@@ -54,31 +55,48 @@ const App = () => {
     setError(null);
     setAuth(null);
 
-    console.log(account);
+    // console.log(account);
 
     if (account) {
+
       try {
-        const challenge = await fetch(
-          `http://localhost:8080/challenge/${account}`
-        );
+        // const challenge = await fetch(
+        //   `http://localhost:8080/challenge/${account}`
+        // );
+        // if (challenge.status === 401) {
+        //   throw new Error("This address is not registered");
+        // }
+        let requestChallenge = axios.get(`http://localhost:8080/challenge/${account}`)
+        const challenge = await requestChallenge;
         if (challenge.status === 401) {
-          throw new Error("This address is not registered");
+          throw new Error("Address is not registered")
         }
-        console.log(challenge);
-        const nonce = await challenge.text();
-        // const nonce = afi.challenge();
+        const nonce = challenge.data;
+        console.log(nonce)
         const signature = await web3.eth.personal.sign(
           nonce,
           account,
           "secret"
         );
-        const auth = await fetch(`http://localhost:8080/auth`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ signature: signature, address: account }),
-        });
+        // const auth = await fetch(`http://localhost:8080/auth`, {
+        //   method: "POST",
+        //   headers: { "Content-Type": "application/json" },
+        //   body: JSON.stringify({ signature: signature, address: account }),
+        // });
 
-        if (auth.status === 200) {
+        // const requestAuth = axios.post(`http://localhost:8080/auth`, JSON.stringify({
+        //   signature: signature,
+        //   address: account
+        // }, { headers: { "Content-Type": "application/json" } }
+        // ))
+        const requestAuth = axios.post(`http://localhost:8080/auth`, JSON.stringify({
+          signature: signature,
+          address: account
+        }), { headers: { "Content-Type": "application/json" } })
+        const auth = await requestAuth;
+        const status = auth.status;
+
+        if (status === 200) {
           setAuth("Successfully authenticated.");
         } else {
           throw new Error(`The API returned ${auth.status}..`);

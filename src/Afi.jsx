@@ -1,48 +1,48 @@
 import axios from 'axios'
 
-function Afi() {
+export default class Afi {
 
-    const _port = 8080
-    const _baseUrl = `http://localhost:${_port}`;
-    const _headers = {
+    _port = 8080
+    _baseUrl = `http://localhost:${this._port}`;
+    _headers = {
         "Content-Type": "application/json"
     }
 
-    const debug = true;
+    static debug = true;
 
     /**
      * Get the nonce for each account. Address describes the account ID.
      */
-    const challenge = ({ path, address }) => {
+    challenge = ({ path, address }) => {
 
-        let url = `${_baseUrl}/${path}/${address}`;
+        let url = `${this._baseUrl}/${path}/${address}`;
         try {
             axios.get(url).then((res) => {
                 if (res.status === 401) {
-                    console.warn(`[ACCOUNT]: No account with this address`,)
+                    console.log(`[ACCOUNT]: No account with this address`,)
                 } else {
                     return res.data;
                 }
             })
         } catch (e) {
             // console.log(`[AXIOS ERROR]: ${e}`)
-            console.warn(`[AXIOS ERROR]: ${e}`,)
+            console.log(`[AXIOS ERROR]: ${e}`,)
         }
 
     }
 
-    const auth = ({ path, signature, address }) => {
+    auth = ({ path, signature, address }) => {
 
-        let url = `${_baseUrl}/${path}`
+        let url = `${this._baseUrl}/${path}`
         let data = JSON.stringify({
             signature: signature,
             address: address
         })
         try {
             axios.post(url, data, {
-                headers: _headers,
+                headers: this._headers,
             }).then((res) => {
-                if (debug) {
+                if (this.debug) {
                     console.log(`[AXIOS DEBUG]: ${res.data}`)
                 }
             })
@@ -52,5 +52,3 @@ function Afi() {
     }
 
 }
-
-export default Afi
