@@ -1,0 +1,46 @@
+.button {
+  width: auto;
+  height: auto;
+  padding: 0px 10px;
+  border-radius: 13px;
+  cursor: pointer;
+  user-select: none;
+}
+.but1 {
+  background: $dark_gray;
+  border: 2px solid $purple;
+  color: $white;
+}
+.but2 {
+  background: transparent;
+  border: 2px solid $green;
+}
+.but3 {
+  background: $dark_gray;
+  background: radial-gradient(
+        circle at 100% 100%,
+        #191919 0,
+        #191919 13px,
+        transparent 13px
+      )
+      0% 0%/16px 16px no-repeat,
+    radial-gradient(circle at 0 100%, #191919 0, #191919 13px, transparent 13px)
+      100% 0%/16px 16px no-repeat,
+    radial-gradient(circle at 100% 0, #191919 0, #191919 13px, transparent 13px)
+      0% 100%/16px 16px no-repeat,
+    radial-gradient(circle at 0 0, #191919 0, #191919 13px, transparent 13px)
+      100% 100%/16px 16px no-repeat,
+    linear-gradient(#191919, #191919) 50% 50% / calc(100% - 6px)
+      calc(100% - 32px) no-repeat,
+    linear-gradient(#191919, #191919) 50% 50% / calc(100% - 32px)
+      calc(100% - 6px) no-repeat,
+    linear-gradient(270deg, #2affb2 58%, #7120d8 100%);
+  border-radius: 16px;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+.but3_1{
+  background: transparent;
+  border: 2px solid $light_gray;
+}
