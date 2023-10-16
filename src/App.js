@@ -3,9 +3,19 @@ import "./App.css";
 import injectedModule from "@web3-onboard/injected-wallets";
 import { init, useConnectWallet } from "@web3-onboard/react";
 import Web3 from "web3";
-import Afi from "./Afi";
 import axios from "axios";
+
 const injected = injectedModule();
+
+const axios_fara_cred = axios.create({
+  baseURL: "http://localhost:8080",
+  withCredentials: true,
+  headers: {
+    "content-type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+  },
+  method: "POST",
+});
 
 init({
   wallets: [injected],
@@ -25,82 +35,108 @@ init({
 
 const App = () => {
   const [{ wallet }, connect] = useConnectWallet();
-  const [web3, setWeb3] = useState(null);
+  // const [web3, setWeb3] = useState(null);
   const [account, setAccount] = useState(null);
   const [authenticating, setAuthenticating] = useState(false);
   const [error, setError] = useState(null);
   const [auth, setAuth] = useState(null);
-  const [nonce, setNonce] = useState(null)
+  const [log, setLog] = useState(false);
 
-  const api = new Afi();
-
-  // useEffect(() => {
-  //   if (!wallet) connect();
-  // }, [wallet, connect]);
+  const login = async () => {
+    if (!wallet) {
+      await connect({
+        autoSelect: {
+          label: "MetaMask",
+          disableModals: true,
+        },
+      });
+      // sign();
+    } else {
+      sign();
+    }
+    console.log(wallet);
+  };
 
   useEffect(() => {
-    if (wallet) setWeb3(new Web3(wallet.provider));
+    if (wallet) sign();
   }, [wallet]);
 
   useEffect(() => {
-    if (web3) web3.eth.getAccounts().then((res) => setAccount(res[0]));
-  }, [, web3]);
+    login();
+  }, [])
 
-  useEffect(() => {
-    if (account !== null && account !== undefined) sign();
-  }, [account]);
+  // useEffect(() => {
+  //   console.log("asd")
+  //   if (!wallet) connect();
+  // }, [log]);
+
+  // useEffect(() => {
+  //   if (wallet) setWeb3(new Web3(wallet.provider));
+  // }, [wallet]);
+
+  // useEffect(() => {
+  //   if (web3) {
+  //     web3.eth.getAccounts().then((res) => setAccount(res[0]));
+  //     sign();
+  //   }
+  // }, [web3]);
 
   const sign = async () => {
     setAuthenticating(true);
     setError(null);
     setAuth(null);
+    let account;
+    console.log(wallet);
 
-    // console.log(account);
+    let web;
+    if (wallet) {
+      web = new Web3(wallet.provider);
+      await web.eth.getAccounts().then((res) => {
+        account = res[0];
+      });
+    }
 
+    console.log(account);
+    setAccount(account);
     if (account) {
-
+      console.log("gfd");
       try {
-        // const challenge = await fetch(
-        //   `http://localhost:8080/challenge/${account}`
-        // );
-        // if (challenge.status === 401) {
-        //   throw new Error("This address is not registered");
-        // }
-        let requestChallenge = axios.get(`http://localhost:8080/challenge/${account}`)
-        const challenge = await requestChallenge;
-        if (challenge.status === 401) {
-          throw new Error("Address is not registered")
-        }
-        const nonce = challenge.data;
-        console.log(nonce)
-        const signature = await web3.eth.personal.sign(
-          nonce,
-          account,
-          "secret"
-        );
-        // const auth = await fetch(`http://localhost:8080/auth`, {
-        //   method: "POST",
-        //   headers: { "Content-Type": "application/json" },
-        //   body: JSON.stringify({ signature: signature, address: account }),
-        // });
+        const challenge = await axios_fara_cred
+          .get(`http://localhost:8080/api/auth/challenge/${"teodor"}/${account}`)
+          .then(async (res) => {
+            console.log(res);
+            if (res.status === 401) {
+              throw new Error("This address is not registered");
+            }
 
-        // const requestAuth = axios.post(`http://localhost:8080/auth`, JSON.stringify({
-        //   signature: signature,
-        //   address: account
-        // }, { headers: { "Content-Type": "application/json" } }
-        // ))
-        const requestAuth = axios.post(`http://localhost:8080/auth`, JSON.stringify({
-          signature: signature,
-          address: account
-        }), { headers: { "Content-Type": "application/json" } })
-        const auth = await requestAuth;
-        const status = auth.status;
+            const nonce = await res.data;
+            let signature = undefined
+            if (localStorage.getItem('_sig') !== undefined && localStorage.getItem('_sig') !== null) {
+              signature = localStorage.getItem('_sig')
+            } else {
+              const signature = await web.eth.personal.sign(
+                nonce,
+                account,
+                "secret"
+              );
+              localStorage.setItem('_sig', signature)
+            }
+            const auth = await axios_fara_cred.post(
+              `http://localhost:8080/api/auth/signin`,
+              {
+                signature: signature,
+                address: account,
+                username: "teodor",
+                password: "teodor",
+              }
+            );
 
-        if (status === 200) {
-          setAuth("Successfully authenticated.");
-        } else {
-          throw new Error(`The API returned ${auth.status}..`);
-        }
+            if (auth.status === 200) {
+              setAuth("Successfully authenticated.");
+            } else {
+              throw new Error(`The API returned ${auth.status}..`);
+            }
+          });
       } catch (error) {
         if (error instanceof Error) {
           setError(`Something went wrong: ${error.message}`);
@@ -124,29 +160,52 @@ const App = () => {
           )}
           <button
             onClick={async () => {
-              await fetch(
-                `http://localhost:8080/challenge/${account}/register`,
-                {
-                  method: "POST",
-                  body: {
-                    username: "Matei vrea sa",
-                  },
-                }
-              ).then((res) => {
-                console.log(res);
-              });
+              // await fetch(
+              //   `http://localhost:8080/challenge/${account}/register`,
+              //   {
+              //     method: "POST",
+              //     body: {
+              //       username: "Matei vrea sa",
+              //     },
+              //   }
+              // ).then((res) => {
+              //   console.log(res);
+              // });
+              console.log(account);
             }}
           >
             register
           </button>
           <button
-            disabled={authenticating}
+            // disabled={authenticating}
             onClick={() => {
-              connect();
+              login();
             }}
           >
             {" "}
             <span>Authenticate</span>
+          </button>
+          <button
+            onClick={async () => {
+              await axios_fara_cred
+                .get("http://localhost:8080/api/auth/userInfo")
+                .then((res) => {
+                  console.log(res);
+                });
+            }}
+          >
+            is auth?
+          </button>
+          <button
+            onClick={async () => {
+              await axios_fara_cred
+                .post("http://localhost:8080/api/auth/signout")
+                .then((res) => {
+                  console.log(res);
+                });
+            }}
+          >
+            logout
           </button>
           {error && <div className="text-red-500 text-center">{error}</div>}
         </div>
