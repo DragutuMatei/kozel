@@ -3,6 +3,7 @@ import { BsDiscord } from "react-icons/bs";
 import { SiWalletconnect } from "react-icons/si";
 import "../assets/style/login.scss";
 import { Link } from "react-router-dom";
+import axios_config from "../utils/AxiosConfig";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -14,6 +15,14 @@ function Login() {
   function handlePasswordChange(e) {
     setPassword(e.target.value);
   }
+
+  const login = async () => {
+    try {
+      await axios_config.post()
+    } catch (error) {
+      
+    }
+  };
 
   return (
     <div className="auth">
@@ -80,9 +89,9 @@ function Login() {
             placeholder="your password"
             onChange={handlePasswordChange}
           />
-          <div className="button but3_1">
-            <h4 className="button">Log in with Email</h4>
-          </div>
+          <button className="button but3_1" onClick={login}>
+            <h4 className="button">Log in</h4>
+          </button>
         </div>
       </div>
     </div>
