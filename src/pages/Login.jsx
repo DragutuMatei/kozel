@@ -1,11 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsDiscord } from "react-icons/bs";
 import { SiWalletconnect } from "react-icons/si";
 import "../assets/style/login.scss";
 import { Link } from "react-router-dom";
 import axios_config from "../utils/AxiosConfig";
+import { auth } from "../utils/Links";
+import injectedModule from "@web3-onboard/injected-wallets";
+import { init, useConnectWallet } from "@web3-onboard/react";
+import Web3 from "web3";
 
-function Login() {
+const injected = injectedModule();
+
+init({
+  wallets: [injected],
+  chains: [
+    {
+      id: "0x1",
+      token: "ETH",
+      label: "Mainnet",
+      rpcUrl: "https://cloudflare-eth.com/",
+    },
+  ],
+  appMetadata: {
+    name: "Spring Boot Web3 Demo",
+    description: "A Spring Boot Web3 login demo",
+  },
+});
+function Login({ setUser }) {
+  const [{ wallet }, connect] = useConnectWallet();
+  // const [web3, setWeb3] = useState(null);
+  const [account, setAccount] = useState(null);
+  const [authenticating, setAuthenticating] = useState(false);
+  const [error, setError] = useState(null);
+  const [log, setLog] = useState(false);
+
   const [username, setUsername] = useState("");
   function handleUsernameChange(e) {
     setUsername(e.target.value);
@@ -18,12 +46,80 @@ function Login() {
 
   const login = async () => {
     try {
-      await axios_config.post()
+      if (!wallet) {
+        await connect({
+          autoSelect: {
+            label: "MetaMask",
+            disableModals: true,
+          },
+        });
+        // sign();
+      } else {
+        sign();
+      }
+      console.log(wallet);
     } catch (error) {
-      
+      console.log("error ", error);
     }
   };
 
+  useEffect(() => {
+    if (wallet) sign();
+  }, [wallet]);
+  const sign = async () => {
+    setAuthenticating(true);
+    setError(null);
+    let account;
+    console.log(wallet);
+
+    let web;
+    if (wallet) {
+      web = new Web3(wallet.provider);
+      await web.eth.getAccounts().then((res) => {
+        account = res[0];
+      });
+    }
+
+    console.log(account);
+    setAccount(account);
+    if (account) {
+      console.log("gfd");
+      try {
+        const challenge = await axios_config
+          .get(auth + `/challenge/${username}/${account}`)
+          .then(async (res) => {
+            console.log(res);
+            if (res.status === 401) {
+              throw new Error("This address is not registered");
+            }
+
+            const nonce = await res.data;
+            const signature = await web.eth.personal.sign(
+              nonce,
+              account,
+              "secret"
+            );
+
+            await axios_config
+              .post(auth + `/signin`, {
+                signature: signature,
+                address: account,
+                username,
+                password,
+              })
+              .then((res) => {
+                setUser(res.data);
+                console.log(res);
+              });
+          });
+      } catch (error) {
+        if (error instanceof Error) {
+          setError(`Something went wrong: ${error.message}`);
+        }
+      }
+      setAuthenticating(false);
+    }
+  };
   return (
     <div className="auth">
       <div className="content">
