@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { BsDiscord } from "react-icons/bs";
 import { SiWalletconnect } from "react-icons/si";
 import "../assets/style/login.scss";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios_config from "../utils/AxiosConfig";
 import { auth } from "../utils/Links";
 import injectedModule from "@web3-onboard/injected-wallets";
 import { init, useConnectWallet } from "@web3-onboard/react";
 import Web3 from "web3";
+import { redirect } from "react-router-dom";
 
 const injected = injectedModule();
 
@@ -26,7 +27,13 @@ init({
     description: "A Spring Boot Web3 login demo",
   },
 });
-function Login({ setUser }) {
+function Login({ user, setUser }) {
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (typeof user == "object") {
+      navigate("/");
+    }
+  }, [user]);
   const [{ wallet }, connect] = useConnectWallet();
   // const [web3, setWeb3] = useState(null);
   const [account, setAccount] = useState(null);
@@ -63,6 +70,7 @@ function Login({ setUser }) {
     }
   };
 
+  const [msg, setMsg] = useState("");
   useEffect(() => {
     if (wallet) sign();
   }, [wallet]);
@@ -85,7 +93,7 @@ function Login({ setUser }) {
     if (account) {
       console.log("gfd");
       try {
-        const challenge = await axios_config
+        await axios_config
           .get(auth + `/challenge/${username}/${account}`)
           .then(async (res) => {
             console.log(res);
@@ -110,7 +118,14 @@ function Login({ setUser }) {
               .then((res) => {
                 setUser(res.data);
                 console.log(res);
+                navigate("/");
+              })
+              .catch((err) => {
+                setMsg("Bad Credentials!");
               });
+          })
+          .catch((err) => {
+            setMsg("Username does not exist!");
           });
       } catch (error) {
         if (error instanceof Error) {
@@ -188,6 +203,7 @@ function Login({ setUser }) {
           <button className="button but3_1" onClick={login}>
             <h4 className="button">Log in</h4>
           </button>
+          {msg !== "" && <h2 className="h2">{msg}</h2>}
         </div>
       </div>
     </div>
