@@ -86,11 +86,10 @@ public class AuthController {
         }
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                .body(new UserInfoResponse(
+                .body(new User(
                         userDetails.getId(),
                         userDetails.getUsername(),
                         userDetails.getEmail(),
-                        userDetails.getNonce(),
                         userDetails.getAddress())
                 );
     }

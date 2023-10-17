@@ -25,7 +25,7 @@ public class Projects {
     private List<Tasks> tasks;
     private List<Solve> solves;
 
-    public Projects(String user_id, String recurrence, String title, String description, String link, String twitter, String discord, String telegram, String wallet, String category) {
+    public Projects(String recurrence,String user_id, String title, String description, String link, String twitter, String discord, String telegram, String wallet, String category) {
         this.user_id = user_id;
         this.recurrence = recurrence;
         this.title = title;
