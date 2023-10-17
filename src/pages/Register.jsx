@@ -3,8 +3,12 @@ import { BsDiscord } from "react-icons/bs";
 import { SiWalletconnect } from "react-icons/si";
 import "../assets/style/login.scss";
 import { Link } from "react-router-dom";
+import Afi from "../Afi";
 
 function Register() {
+
+  const api = new Afi();
+
   const [email, setEmail] = useState("");
   function handleEmailChange(e) {
     setEmail(e.target.value);
@@ -86,7 +90,10 @@ function Register() {
             placeholder="your password"
             onChange={handlePasswordChange}
           />
-          <div className="button but3_1">
+          <div className="button but3_1" onClick={() => {
+            console.warn("Chiper password on send")
+            api.signup({user: username, email: email, password: password})
+          }}>
             <h4 className="button">Log in with Email</h4>
           </div>
         </div>
