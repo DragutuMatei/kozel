@@ -7,9 +7,11 @@ import json from "../utils/Projects.json";
 
 import { Link } from "react-router-dom";
 import Side from "../components/Side";
+import axios_config from "../utils/AxiosConfig";
+import { projects } from "../utils/Links";
 
 function Home() {
-  const [tags, setTag] = useState([]);
+  const [tags, setTag] = useState(["Gaming", "Startup", "Music", "Metaverse", "Education", "NFT"]);
   const [tagIndex, setTagIndex] = useState(0);
   const handleNextTag = () => {
     setTagIndex((prevIndex) => (prevIndex + 5) % tags.length);
@@ -19,23 +21,37 @@ function Home() {
     setTagIndex((prevIndex) => (prevIndex - 5 + tags.length) % tags.length);
   };
 
-  useEffect(() => {
-    // make it array of tags
-    setTag((prevTag) => [...prevTag, "Gaming"]);
-    setTag((prevTag) => [...prevTag, "Startup"]);
-    setTag((prevTag) => [...prevTag, "Music"]);
-    setTag((prevTag) => [...prevTag, "Metaverse"]);
-    setTag((prevTag) => [...prevTag, "Education"]);
-    setTag((prevTag) => [...prevTag, "NFT"]);
-  }, []);
+  // useEffect(() => {
+  //   // make it array of tags
+  //   setTag((prevTag) => [...prevTag, "Gaming"]);
+  //   setTag((prevTag) => [...prevTag, "Startup"]);
+  //   setTag((prevTag) => [...prevTag, "Music"]);
+  //   setTag((prevTag) => [...prevTag, "Metaverse"]);
+  //   setTag((prevTag) => [...prevTag, "Education"]);
+  //   setTag((prevTag) => [...prevTag, "NFT"]);
+  // }, []);
 
   const [CardCategoryList, setCardCategoryList] = useState([]);
 
   const [selectedCategory, setSelectedCategory] = useState();
 
   // Add default value on page load
+  // TEO replace this with fetch
   useEffect(() => {
-    setCardCategoryList(json.projects);
+    // setCardCategoryList(json.projects);
+    try {
+      axios_config.get(`${projects}/getProjects`).then((res) => {
+        console.log(res)
+        if (res.status == 401) {
+          console.log('atuh')
+        }
+      })
+      // .catch((e)=>{
+      //   console.log(e)
+      // })
+    } catch (e) {
+      console.warn(e)
+    }
   }, []);
 
   // Function to get filtered list
@@ -104,9 +120,10 @@ function Home() {
                   <BsStars />
                   <h3 className="p1">All</h3>
                 </div>
-                {tags.slice(tagIndex, tagIndex + 6).map((tag) => {
+                {tags.slice(tagIndex, tagIndex + 6).map((tag, index) => {
                   return (
                     <div
+                      key={index}
                       className="shortL button but3"
                       onClick={() => setSelectedCategory(tag)}
                     >
@@ -131,7 +148,7 @@ function Home() {
           <div className="proiecte">
             {filteredList.map((proiect) => {
               return (
-                <Link to={"/proiect/" + proiect.title}className="proiect">
+                <Link to={"/proiect/" + proiect.title} className="proiect">
                   < >
                     <h3 className="title">{proiect.title}</h3>
                     <p className="p1">

@@ -2,18 +2,27 @@ import React, { useEffect, useState } from "react";
 
 import "../assets/style/login.scss";
 import { Link } from "react-router-dom";
+import axios_config from "../utils/AxiosConfig";
+import { projects } from "../utils/Links";
 
-function CreateCommunity() {
-  const [tags, setTags] = useState([]);
-  useEffect(() => {
-    // make it array of tags
-    setTags((prevTag) => [...prevTag, "Gaming"]);
-    setTags((prevTag) => [...prevTag, "Startup"]);
-    setTags((prevTag) => [...prevTag, "Music"]);
-    setTags((prevTag) => [...prevTag, "Metaverse"]);
-    setTags((prevTag) => [...prevTag, "Education"]);
-    setTags((prevTag) => [...prevTag, "NFT"]);
-  }, []);
+function CreateCommunity({ user }) {
+  const [tags, setTags] = useState([
+    "Gaming",
+    "Startup",
+    "Music",
+    "Metaverse",
+    "Education",
+    "NFT"
+  ]);
+  // useEffect(() => {
+  //   // make it array of tags
+  //   setTags((prevTag) => [...prevTag, "Gaming"]);
+  //   setTags((prevTag) => [...prevTag, "Startup"]);
+  //   setTags((prevTag) => [...prevTag, "Music"]);
+  //   setTags((prevTag) => [...prevTag, "Metaverse"]);
+  //   setTags((prevTag) => [...prevTag, "Education"]);
+  //   setTags((prevTag) => [...prevTag, "NFT"]);
+  // }, []);
 
   const [name, setName] = useState("");
   function handleNameChange(e) {
@@ -60,8 +69,31 @@ function CreateCommunity() {
     setWallet(e.target.value);
   }
 
-
-
+  const createCommunity = () => {
+    let ok = true
+    let requirements = [name, user.id, description, website, category, twitter, discord, telegram, wallet]
+    requirements.forEach((req, index) => {
+      if (req == undefined || req == null || req == '') {
+        console.warn('Field(s) not filled.')
+        ok = false
+      }
+    })
+    if (ok == true)
+      axios_config.post(`${projects}/addProject`, {
+        recurrence: 'all',
+        title: name,
+        user_id: user.id,
+        description: description,
+        link: website,
+        category: category,
+        twitter: twitter,
+        discord: discord,
+        telegram: telegram,
+        wallet: wallet,
+      }).then((res) => {
+        console.log(res)
+      })
+  }
 
   return (
     <div className="auth">
@@ -166,7 +198,7 @@ function CreateCommunity() {
           <br />
 
           <div className="button but3_1">
-            <h4 className="button">Create your community</h4>
+            <h4 className="button" onClick={() => { createCommunity() }}>Create your community</h4>
           </div>
         </div>
       </div>

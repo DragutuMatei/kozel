@@ -31,7 +31,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/proiect/:title" element={<Dashboard />} />
-        <Route path="/create-community" element={<CreateCommunity />} />
+        <Route path="/create-community" element={<CreateCommunity user={user} />} />
         <Route path="/leaderboard" element={<Liderboard />} />
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/register" element={<Register />} />

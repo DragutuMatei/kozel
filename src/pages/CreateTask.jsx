@@ -5,30 +5,47 @@ import { Link, useParams } from "react-router-dom";
 
 function CreateTask() {
   const { id } = useParams();
-  const [submission_types, setsubmission_types] = useState([]);
-  useEffect(() => {
-    // make it array of submission_types
-    setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "URL"]);
-    setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "Image"]);
-    setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "Text"]);
-    setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "Quiz"]);
-    setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "Visit Link"]);
-    setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "Empty"]);
-    setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "Twitter"]);
-    setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "Join Discord"]);
-    setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "Join Telegram"]);
-    setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "Invites"]);
-  }, []);
+  const [submission_types, setsubmission_types] = useState([
+    "URL",
+    "Image",
+    "Text",
+    "Quiz",
+    "Visit Link",
+    "Empty",
+    "Twitter",
+    "Join Discord",
+    "Join Telegram",
+    "Invites"
+  ]);
+  // useEffect(() => {
+  //   // make it array of submission_types
+  //   setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "URL"]);
+  //   setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "Image"]);
+  //   setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "Text"]);
+  //   setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "Quiz"]);
+  //   setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "Visit Link"]);
+  //   setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "Empty"]);
+  //   setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "Twitter"]);
+  //   setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "Join Discord"]);
+  //   setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "Join Telegram"]);
+  //   setsubmission_types((prevsubmission_type) => [...prevsubmission_type, "Invites"]);
+  // }, []);
 
-  const [recurrence, setrecurrence] = useState([]);
-  useEffect(() => {
-    // make it array of recurrence
-    setrecurrence((prevrecurrence) => [...prevrecurrence, "Daily"]);
-    setrecurrence((prevrecurrence) => [...prevrecurrence, "Weekly"]);
-    setrecurrence((prevrecurrence) => [...prevrecurrence, "Monthly"]);
-    setrecurrence((prevrecurrence) => [...prevrecurrence, "Yearly"]);
-    setrecurrence((prevrecurrence) => [...prevrecurrence, "Once"]);
-  }, []);
+  const [recurrence, setrecurrence] = useState([
+    "Daily",
+    "Weekly",
+    "Monthly",
+    "Yearly",
+    "Once"
+  ]);
+  // useEffect(() => {
+  //   // make it array of recurrence
+  //   setrecurrence((prevrecurrence) => [...prevrecurrence, "Daily"]);
+  //   setrecurrence((prevrecurrence) => [...prevrecurrence, "Weekly"]);
+  //   setrecurrence((prevrecurrence) => [...prevrecurrence, "Monthly"]);
+  //   setrecurrence((prevrecurrence) => [...prevrecurrence, "Yearly"]);
+  //   setrecurrence((prevrecurrence) => [...prevrecurrence, "Once"]);
+  // }, []);
 
 
 
