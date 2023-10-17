@@ -14,27 +14,39 @@ import axios_config from "./utils/AxiosConfig";
 import { auth } from "./utils/Links";
 
 function App() {
-  const [user, setUser] = useState();
+  const [user, setUser] = useState("");
 
   useEffect(() => {
+    console.log(typeof user);
     console.log(user);
   }, [user]);
 
   useEffect(() => {
     axios_config.get(auth + "/userInfo").then((res) => {
       setUser(res.data);
+      console.log(res.data);
     });
   }, []);
+
+  const logout = async () => {
+    await axios_config.post(auth + "/signout").then((res) => {
+      alert("User logged");
+      setUser("");
+    });
+  };
 
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home logout={logout} user={user} />} />
         <Route path="/proiect/:title" element={<Dashboard />} />
         <Route path="/create-community" element={<CreateCommunity user={user} />} />
         <Route path="/leaderboard" element={<Liderboard />} />
-        <Route path="/login" element={<Login setUser={setUser} />} />
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/login"
+          element={<Login setUser={setUser} user={user} />}
+        />
+        <Route path="/register" element={<Register user={user} />} />
         <Route path="/create-task/:id" element={<CreateTask />} />
         <Route path="/admin/:title" element={<Admin />} />
       </Routes>

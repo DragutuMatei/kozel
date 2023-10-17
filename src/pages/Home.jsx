@@ -90,16 +90,31 @@ function Home() {
       <div className="ok">
         {/* <Nav /> */}
         <div className="page">
-          <div className="logout">
-            {/* <div className="button but2">
-              <h4 className="button">Connect with metamask</h4>
-            </div> */}
-            <Link to="/auth">
-              <div className="button but1">
+          {user !== "" ? (
+            <div className="logout">
+              {/* <div className="button but2">
+                  <h4 className="button">Connect with metamask</h4>
+                </div> */}
+              {/* <Link to="/auth"> */}
+              <div className="button but1" onClick={logout}>
                 <h4 className="button">Log out</h4>
               </div>
+              {/* </Link> */}
+            </div>
+          ) : (
+            <div className="logout">
+            <Link to={"/login"}>
+              <div className="button but1">
+                <h4 className="button">Login</h4>
+              </div>
             </Link>
-          </div>
+              <Link to={"/register"}>
+                <div className="button but2">
+                  <h4 className="button">Register</h4>
+                </div>
+              </Link>
+            </div>
+          )}
           <header>
             <div className="titles">
               <h1 className="h1">Community projects</h1>
@@ -149,7 +164,7 @@ function Home() {
             {filteredList.map((proiect) => {
               return (
                 <Link to={"/proiect/" + proiect.title} className="proiect">
-                  < >
+                  <>
                     <h3 className="title">{proiect.title}</h3>
                     <p className="p1">
                       {proiect.description.length > 100

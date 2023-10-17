@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../assets/style/login.scss";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios_config from "../utils/AxiosConfig";
 import { auth } from "../utils/Links";
 
-function Register() {
+function Register({ user }) {
   const [email, setEmail] = useState("");
   function handleEmailChange(e) {
     setEmail(e.target.value);
@@ -19,6 +19,12 @@ function Register() {
   function handlePasswordChange(e) {
     setPassword(e.target.value);
   }
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (typeof user == "object") {
+      navigate("/");
+    }
+  }, [user]);
 
   const [msg, setMsg] = useState("");
 
