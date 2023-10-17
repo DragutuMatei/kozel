@@ -150,7 +150,7 @@ public class ProjectsController {
 
     @PostMapping("/addProject")
     public ResponseEntity<?> addProjects(@RequestBody ProjectRequest projectRequest) {
-        Projects project = new Projects(projectRequest.getRecurrence(), projectRequest.getUser_id(), projectRequest.getTitle(), projectRequest.getDescription(), projectRequest.getLink(), projectRequest.getCategory());
+        Projects project = new Projects(projectRequest.getRecurrence(), projectRequest.getUser_id(), projectRequest.getTitle(), projectRequest.getDescription(), projectRequest.getLink(), projectRequest.getTwitter(), projectRequest.getDiscord(),  projectRequest.getTelegram(), projectRequest.getWallet(), projectRequest.getCategory());
         projectsRepository.save(project);
         return ResponseEntity.ok(project);
     }

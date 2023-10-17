@@ -12,15 +12,16 @@ public class UserInfoResponse {
 
     private String nonce;
 
-    public UserInfoResponse(String id, String username, String email) {
+    public UserInfoResponse() {
+    }
+
+    public UserInfoResponse(String id, String username, String email, String address, String nonce) {
         this.id = id;
         this.username = username;
         this.email = email;
+        this.address = address;
+        this.nonce = nonce;
     }
-
-    public UserInfoResponse(String id, String username, String email, String nonce, String address) {
-    }
-
 
     public String getId() {
         return id;
