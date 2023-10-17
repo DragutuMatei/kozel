@@ -10,7 +10,7 @@ import Side from "../components/Side";
 import axios_config from "../utils/AxiosConfig";
 import { projects } from "../utils/Links";
 
-function Home() {
+function Home({user, logout}) {
   const [tags, setTag] = useState(["Gaming", "Startup", "Music", "Metaverse", "Education", "NFT"]);
   const [tagIndex, setTagIndex] = useState(0);
   const handleNextTag = () => {
