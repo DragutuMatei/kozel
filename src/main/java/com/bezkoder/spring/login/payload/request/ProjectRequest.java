@@ -1,7 +1,7 @@
 package com.bezkoder.spring.login.payload.request;
 
 public class ProjectRequest {
-    private String recurrence;
+    private String img;
     private String title;
     private String user_id;
     private String description;
@@ -44,12 +44,12 @@ public class ProjectRequest {
         this.wallet = wallet;
     }
 
-    public String getRecurrence() {
-        return recurrence;
+    public String getImg() {
+        return img;
     }
 
-    public void setRecurrence(String recurrence) {
-        this.recurrence = recurrence;
+    public void setImg(String img) {
+        this.img = img;
     }
 
     public String getTitle() {

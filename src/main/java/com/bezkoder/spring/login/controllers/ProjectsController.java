@@ -12,7 +12,6 @@ import com.bezkoder.spring.login.repository.ProjectsRepository;
 import com.bezkoder.spring.login.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -150,7 +149,7 @@ public class ProjectsController {
 
     @PostMapping("/addProject")
     public ResponseEntity<?> addProjects(@RequestBody ProjectRequest projectRequest) {
-        Projects project = new Projects(projectRequest.getRecurrence(), projectRequest.getUser_id(), projectRequest.getTitle(), projectRequest.getDescription(), projectRequest.getLink(), projectRequest.getTwitter(), projectRequest.getDiscord(),  projectRequest.getTelegram(), projectRequest.getWallet(), projectRequest.getCategory());
+        Projects project = new Projects(projectRequest.getImg(), projectRequest.getUser_id(), projectRequest.getTitle(), projectRequest.getDescription(), projectRequest.getLink(), projectRequest.getTwitter(), projectRequest.getDiscord(),  projectRequest.getTelegram(), projectRequest.getWallet(), projectRequest.getCategory());
         projectsRepository.save(project);
         return ResponseEntity.ok(project);
     }

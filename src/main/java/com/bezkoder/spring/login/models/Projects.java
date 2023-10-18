@@ -11,7 +11,7 @@ public class Projects {
     @Id
     private String id;
     private String user_id;
-    private String recurrence;
+    private String img;
     private String title;
     private String description;
     private String link;
@@ -19,15 +19,14 @@ public class Projects {
     private String discord;
     private String telegram;
     private String wallet;
-
     private String category;
     private List<User> users;
     private List<Tasks> tasks;
     private List<Solve> solves;
 
-    public Projects(String recurrence,String user_id, String title, String description, String link, String twitter, String discord, String telegram, String wallet, String category) {
+    public Projects(String img, String user_id, String title, String description, String link, String twitter, String discord, String telegram, String wallet, String category) {
         this.user_id = user_id;
-        this.recurrence = recurrence;
+        this.img = img;
         this.title = title;
         this.description = description;
         this.link = link;
@@ -149,11 +148,11 @@ public class Projects {
 
     }
 
-    public String getRecurrence() {
-        return recurrence;
+    public String getImg() {
+        return img;
     }
 
-    public void setRecurrence(String recurrence) {
-        this.recurrence = recurrence;
+    public void setImg(String img) {
+        this.img = img;
     }
 }
