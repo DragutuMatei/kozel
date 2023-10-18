@@ -29,7 +29,8 @@ public class UserDetailsImpl implements UserDetails {
     private String nonce;
 
 
-    public UserDetailsImpl(String username, String email, String password, String address, String nonce) {
+    public UserDetailsImpl(String id, String username, String email, String password, String address, String nonce) {
+        this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
@@ -40,6 +41,7 @@ public class UserDetailsImpl implements UserDetails {
 
     public static UserDetailsImpl build(User user) {
         return new UserDetailsImpl(
+                user.getId(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
