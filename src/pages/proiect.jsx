@@ -173,22 +173,19 @@ function Project() {
             <div className="titles">
               <h1 className="h1"> {proiect ? proiect.title : null} </h1>
               <p className="p1">
-                Explore our vision for a rewarding tomorrow, where engagement
-                ignites innovation and collaboration leads the way. Join us as
-                we forge a new path, shaping the future of community
-                interaction, one task at a time.
+                {proiect ? proiect.description : null}
               </p>
               <div className="l">
-                <a href="https://twitter.com/fstlaneapp">
+                <a href={`${proiect ? proiect.twitter : null}`}>
                   <RiTwitterXFill />
                 </a>
-                <a href="">
+                <a href={`${proiect ? proiect.discord : null}`}>
                   <BsDiscord />
                 </a>
-                <a href="">
+                <a href={`${proiect ? proiect.telegram : null}`}>
                   <FaTelegramPlane />
                 </a>
-                <a href="">
+                <a href={`${proiect ? proiect.wallet : null}`}>
                   <GiWallet />
                 </a>
               </div>
