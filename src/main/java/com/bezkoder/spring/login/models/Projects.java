@@ -22,7 +22,6 @@ public class Projects {
     private String category;
     private List<User> users;
     private List<Tasks> tasks;
-    private List<Solve> solves;
 
     public Projects( String user_id,String img, String title, String description, String link, String twitter, String discord, String telegram, String wallet, String category) {
         this.user_id = user_id;
@@ -37,7 +36,6 @@ public class Projects {
         this.category = category;
         this.users = new ArrayList<>();
         this.tasks = new ArrayList<>();
-        this.solves = new ArrayList<>();
     }
 
     public String getTwitter() {
@@ -70,14 +68,6 @@ public class Projects {
 
     public void setWallet(String wallet) {
         this.wallet = wallet;
-    }
-
-    public List<Solve> getSolves() {
-        return solves;
-    }
-
-    public void setSolves(List<Solve> solves) {
-        this.solves = solves;
     }
 
     public String getUser_id() {

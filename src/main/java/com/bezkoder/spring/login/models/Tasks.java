@@ -3,6 +3,8 @@ package com.bezkoder.spring.login.models;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Tasks {
@@ -11,6 +13,16 @@ public class Tasks {
     private String description;
     private String link;
     private int reward;
+    private List<Solve> solves;
+
+    public List<Solve> getSolves() {
+        return solves;
+    }
+
+    public void setSolves(List<Solve> solves) {
+        this.solves = solves;
+    }
+
 
     public Tasks(String title, String description, String link, int reward) {
         this.id = UUID.randomUUID().toString();
@@ -18,6 +30,7 @@ public class Tasks {
         this.description = description;
         this.link = link;
         this.reward = reward;
+        this.solves = new ArrayList<>();
     }
 
     public String getId() {

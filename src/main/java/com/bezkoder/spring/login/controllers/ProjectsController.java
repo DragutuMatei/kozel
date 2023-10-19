@@ -31,14 +31,14 @@ public class ProjectsController {
     @Autowired
     UserRepository userRepository;
 
-    @PostMapping("{project_id}/addSolve")
-    public ResponseEntity<?> addSolve(@PathVariable String project_id, @RequestBody SolveRequest solveRequest) {
+    @PostMapping("{project_id}/{index_task}/addSolve")
+    public ResponseEntity<?> addSolve(@PathVariable String project_id,@PathVariable int index_task, @RequestBody SolveRequest solveRequest) {
         Optional<Projects> project = projectsRepository.findById(project_id);
         if (project.isPresent()) {
-            List<Solve> solves = project.get().getSolves();
+            List<Solve> solves = project.get().getTasks().get(index_task).getSolves();
             Solve solve = new Solve(solveRequest.getUsername(), solveRequest.getImg());
             solves.add(solve);
-            project.get().setSolves(solves);
+            project.get().getTasks().get(index_task).setSolves(solves);
             projectsRepository.save(project.get());
             return ResponseEntity.ok(true);
         }
@@ -46,40 +46,40 @@ public class ProjectsController {
         return ResponseEntity.ok(false);
     }
 
-    @GetMapping("{project_id}/getSolves")
-    public ResponseEntity<?> getSolves(@PathVariable String project_id) {
+    @GetMapping("{project_id}/{index_task}/getSolves")
+    public ResponseEntity<?> getSolves(@PathVariable String project_id, @PathVariable int index_task) {
         Optional<Projects> project = projectsRepository.findById(project_id);
         if (project.isPresent()) {
-            List<Solve> solves = project.get().getSolves();
+            List<Solve> solves = project.get().getTasks().get(index_task).getSolves();
             return ResponseEntity.ok(solves);
         }
         return ResponseEntity.ok(false);
     }
 
-    @DeleteMapping("{project_id}/deleteSolve/{username}")
-    public ResponseEntity<?> deleteSolve(@PathVariable String project_id, @PathVariable String username) {
+    @DeleteMapping("{project_id}/{index_task}/deleteSolve/{username}")
+    public ResponseEntity<?> deleteSolve(@PathVariable String project_id,@PathVariable int index_task,  @PathVariable String username) {
         Optional<Projects> project = projectsRepository.findById(project_id);
         if (project.isPresent()) {
-            List<Solve> solves = project.get().getSolves();
+            List<Solve> solves = project.get().getTasks().get(index_task).getSolves();
             solves.removeIf(solve -> solve.getUsername().equals(username));
-            project.get().setSolves(solves);
+            project.get().getTasks().get(index_task).setSolves(solves);
             projectsRepository.save(project.get());
             return ResponseEntity.ok(true);
         }
         return ResponseEntity.ok(false);
     }
 
-    @PostMapping("{project_id}/decideSolve/{username}")
-    public ResponseEntity<?> decideSolve(@PathVariable String project_id, @PathVariable String username, @RequestBody boolean decide) {
+    @PostMapping("{project_id}/{index_task}/decideSolve/{username}")
+    public ResponseEntity<?> decideSolve(@PathVariable String project_id,@PathVariable int index_task, @PathVariable String username, @RequestBody boolean decide) {
         Optional<Projects> project = projectsRepository.findById(project_id);
         if (project.isPresent()) {
-            List<Solve> solves = project.get().getSolves();
+            List<Solve> solves = project.get().getTasks().get(index_task).getSolves();
             Solve solve = new Solve();
             for (Solve found_solve : solves) {
                 if (found_solve.getUsername().equals(username)) {
                     solve.setAccept(decide);
                     solve.setViewed(true);
-                    project.get().setSolves(solves);
+                    project.get().getTasks().get(index_task).setSolves(solves);
                     projectsRepository.save(project.get());
                     return ResponseEntity.ok(true);
                 }
