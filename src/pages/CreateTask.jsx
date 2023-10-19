@@ -66,9 +66,11 @@ function CreateTask() {
         link: link,
         reward: xp
       }).then((res) => {
-        // console.log(res.data)
+        console.log(res.data)
+        return true;
       }).catch(e => {
         console.warn(e)
+        return false;
       })
   }
 

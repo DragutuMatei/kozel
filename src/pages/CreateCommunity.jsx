@@ -1,28 +1,30 @@
 import React, { useEffect, useState } from "react";
 
 import "../assets/style/login.scss";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios_config from "../utils/AxiosConfig";
 import { projects } from "../utils/Links";
 
 function CreateCommunity({ user }) {
-  const [tags, setTags] = useState([
-    "Gaming",
-    "Startup",
-    "Music",
-    "Metaverse",
-    "Education",
-    "NFT"
-  ]);
-  // useEffect(() => {
-  //   // make it array of tags
-  //   setTags((prevTag) => [...prevTag, "Gaming"]);
-  //   setTags((prevTag) => [...prevTag, "Startup"]);
-  //   setTags((prevTag) => [...prevTag, "Music"]);
-  //   setTags((prevTag) => [...prevTag, "Metaverse"]);
-  //   setTags((prevTag) => [...prevTag, "Education"]);
-  //   setTags((prevTag) => [...prevTag, "NFT"]);
-  // }, []);
+  const [tags, setTags] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!localStorage.getItem("logged") == "true") {
+      navigate("/");
+    }
+  }, [user]);
+
+  useEffect(() => {
+    // make it array of tags
+    setTags((prevTag) => [...prevTag, "Choose"]);
+    setTags((prevTag) => [...prevTag, "Gaming"]);
+    setTags((prevTag) => [...prevTag, "Startup"]);
+    setTags((prevTag) => [...prevTag, "Music"]);
+    setTags((prevTag) => [...prevTag, "Metaverse"]);
+    setTags((prevTag) => [...prevTag, "Education"]);
+    setTags((prevTag) => [...prevTag, "NFT"]);
+  }, []);
 
   const [name, setName] = useState("");
   function handleNameChange(e) {
@@ -39,9 +41,27 @@ function CreateCommunity({ user }) {
     setWebsite(e.target.value);
   }
 
+  function imageUploaded(file) {}
+  const [img, setImg] = useState("");
+
   const [logo, setLogo] = useState("");
   function handleLogoChange(e) {
-    setLogo(e.target.value);
+    // setLogo(e.target.files[0]);
+    // console.log(e.target.files[0]);
+    const file = e.target.files[0];
+
+    let imageBase64Stringsep, base64String;
+    let reader = new FileReader();
+    console.log("next");
+
+    reader.onload = function () {
+      base64String = reader.result.replace("data:", "").replace(/^.+,/, "");
+
+      imageBase64Stringsep = base64String;
+
+      setImg(base64String);
+    };
+    reader.readAsDataURL(file);
   }
 
   const [category, setCategory] = useState("");
@@ -69,32 +89,31 @@ function CreateCommunity({ user }) {
     setWallet(e.target.value);
   }
 
-  const createCommunity = () => {
-    let ok = true
-    let requirements = [name, user.id, description, website, category, twitter, discord, telegram, wallet]
-    requirements.forEach((req, index) => {
-      if (req == undefined || req == null || req == '') {
-        console.log(req, index)
-        console.warn('Field(s) not filled.')
-        ok = false
-      }
-    })
-    if (ok == true)
-      axios_config.post(`${projects}/addProject`, {
-        recurrence: 'all',
+  const [msg, setMsg] = useState("");
+
+  const createcom = async () => {
+    await axios_config
+      .post(projects + "/addProject", {
+        img,
         title: name,
         user_id: user.id,
-        description: description,
+        description,
         link: website,
-        category: category,
-        twitter: twitter,
-        discord: discord,
-        telegram: telegram,
-        wallet: wallet,
-      }).then((res) => {
-        console.log(res)
+        category,
+        twitter,
+        discord,
+        telegram,
+        wallet,
       })
-  }
+      .then((res) => {
+        console.log(res);
+        setMsg("Community added succesfully!");
+      })
+      .catch((err) => {
+        setMsg("Complete all fields!");
+        console.log(err);
+      });
+  };
 
   return (
     <div className="auth">
@@ -182,13 +201,11 @@ function CreateCommunity({ user }) {
             onChange={handleWalletChange}
           />
 
-
-
           <p className="bold_p">Category</p>
           <div className="tags">
             <select name="tags" id="tags" onChange={handleTagChange}>
-              {tags.map((tag, index) => (
-                <option value={index}>{tag}</option>
+              {tags.map((tag) => (
+                <option value={tag}>{tag}</option>
               ))}
             </select>
           </div>
@@ -198,9 +215,10 @@ function CreateCommunity({ user }) {
 
           <br />
 
-          <div className="button but3_1">
-            <h4 className="button" onClick={() => { createCommunity() }}>Create your community</h4>
-          </div>
+          <button className="button but3_1" onClick={createcom}>
+            <h4 className="button">Create your community</h4>
+          </button>
+          {msg !== "" && <h2 className="h2">{msg}</h2>}
         </div>
       </div>
     </div>

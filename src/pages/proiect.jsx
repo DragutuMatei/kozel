@@ -17,8 +17,10 @@ function Project() {
 
   const [display, setDisplay] = useState(false);
   const [proiect, setProiect] = useState(null);
-  const discover = (proiect) => {
-    setProiect(proiect);
+  const [selectedTask, setSelectedTask] = useState(null)
+  const discover = (task) => {
+    // setProiect(proiect);
+    setSelectedTask(task)
     setDisplay(true);
   };
   const [tasks, setTasks] = useState({})
@@ -44,11 +46,22 @@ function Project() {
   }, [proiect])
 
   // aici faci tu altfel cu id
-  var id_task = 0;
+  // var id_task = 0;
 
   const [proof, setProof] = useState("");
   function handleProofChange(e) {
-    setProof(e.target.value);
+    // setProof(e.target.value);
+    let file = e.target.files[0]
+    let reader = new FileReader()
+    reader.onload = function () {
+      let base64 = reader.result.replace("data:", "").replace(/^.+,/, "");
+      let imageBase64 = base64
+      setProof(imageBase64)
+      /////////////////////////////////////////////
+      // console.log(imageBase64)
+      //complete task and send and display and quit menu
+    }
+    reader.readAsDataURL(file)
   }
 
   useEffect(() => {
@@ -89,7 +102,7 @@ function Project() {
               />
               <div className="top">
                 <h3 className="h3">
-                  {proiect.title} <span id="once">ONCE</span>{" "}
+                  {selectedTask.title} <span id="once">ONCE</span>{" "}
                 </h3>
               </div>
               <div className="bottom">
@@ -101,10 +114,10 @@ function Project() {
                     connected with <span className="green_text">@demo</span>
                   </h4>
                   <h3 className="title">MISSION 🎯</h3>
-                  <p className="p1">{proiect.description}</p>
-                  {proiect.list1 && (
+                  <p className="p1">{selectedTask.description}</p>
+                  {selectedTask.list1 && (
                     <ol>
-                      {proiect.list1.map((list, i) => {
+                      {selectedTask.list1.map((list, i) => {
                         return (
                           <li>
                             <p className="bold_p">{list}</p>
@@ -113,10 +126,10 @@ function Project() {
                       })}
                     </ol>
                   )}
-                  {proiect.desc2 && <h3 className="h3">{proiect.desc2}</h3>}
-                  {proiect.list2 && (
+                  {selectedTask.desc2 && <h3 className="h3">{selectedTask.desc2}</h3>}
+                  {selectedTask.list2 && (
                     <ul>
-                      {proiect.list2.map((list) => {
+                      {selectedTask.list2.map((list) => {
                         return (
                           <li>
                             <p className="bold_p">{list}</p>
@@ -125,9 +138,9 @@ function Project() {
                       })}
                     </ul>
                   )}
-                  {proiect.link && (
-                    <a href={proiect.link} className="green_text">
-                      {proiect.link}
+                  {selectedTask.link && (
+                    <a href={selectedTask.link} className="green_text">
+                      {selectedTask.link}
                     </a>
                   )}
                   <h3 className="title" style={{ marginTop: 50 }}>
@@ -145,7 +158,7 @@ function Project() {
                 <div className="right">
                   <h3 className="h3">Reward</h3>
                   <h3 className="title">
-                    {proiect.reward}
+                    {selectedTask.reward}
                     <img
                       src={require("../assets/images/icon_logo.svg").default}
                       alt=""
@@ -169,7 +182,7 @@ function Project() {
             </Link>
           </div>
           <header>
-            <img src={require("../assets/images/user.png")} alt="" />
+            <img src={proiect ? `data:image/jpeg;base64,${proiect.img}` : null} alt="" />
             <div className="titles">
               <h1 className="h1"> {proiect ? proiect.title : null} </h1>
               <p className="p1">

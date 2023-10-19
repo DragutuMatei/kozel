@@ -12,12 +12,12 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import axios_config from "./utils/AxiosConfig";
 import { auth } from "./utils/Links";
+import Cookies from "js-cookie";
 
 function App() {
   const [user, setUser] = useState("");
 
   useEffect(() => {
-    console.log(typeof user);
     console.log(user);
   }, [user]);
 
@@ -25,12 +25,15 @@ function App() {
     axios_config.get(auth + "/userInfo").then((res) => {
       setUser(res.data);
       console.log(res.data);
+      localStorage.setItem("logged", "true");
+
     });
   }, []);
 
   const logout = async () => {
     await axios_config.post(auth + "/signout").then((res) => {
       alert("User logged");
+      localStorage.setItem("logged", "false");
       setUser("");
     });
   };
@@ -40,7 +43,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Home logout={logout} user={user} />} />
         <Route path="/proiect/:title" element={<Dashboard />} />
-        <Route path="/create-community" element={<CreateCommunity user={user} />} />
+        <Route
+          path="/create-community"
+          element={<CreateCommunity user={user} />}
+        />
         <Route path="/leaderboard" element={<Liderboard />} />
         <Route
           path="/login"
