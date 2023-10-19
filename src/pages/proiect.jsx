@@ -9,6 +9,8 @@ import json from "../utils/Tasks.json";
 import { Link, useParams } from "react-router-dom";
 import Side from "../components/Side";
 import { MdBarChart } from "react-icons/md";
+import axios_config from "../utils/AxiosConfig";
+import { projects } from "../utils/Links";
 
 function Project() {
   const { title } = useParams();
@@ -19,6 +21,27 @@ function Project() {
     setProiect(proiect);
     setDisplay(true);
   };
+  const [tasks, setTasks] = useState({})
+
+  useEffect(() => {
+    axios_config.get(`${projects}/getProject/${title}`).then((res) => {
+      if (res.data == false) {
+        throw "No project with this id"
+      } else {
+        setProiect(res.data)
+        console.log(res.data)
+      }
+    }).catch(e => {
+      console.warn(e)
+    })
+  }, [])
+
+  useEffect(() => {
+    if (proiect)
+      axios_config.get(`${projects}/${proiect.id}/getTasks`).then((res) => {
+        setTasks(res.data)
+      }).catch(e => { console.warn(e) })
+  }, [proiect])
 
   // aici faci tu altfel cu id
   var id_task = 0;
@@ -136,19 +159,19 @@ function Project() {
         {/* <Nav /> */}
         <div className="page">
           <div className="logout">
-             {/* <div className="button but2">
+            {/* <div className="button but2">
               <h4 className="button">Connect with metamask</h4>
             </div>  */}
-             <Link to={"/admin/" + title}>
+            <Link to={"/admin/" + title}>
               <div className="button but1">
                 <h4 className="button">Admin Panel</h4>
               </div>
-            </Link> 
+            </Link>
           </div>
           <header>
             <img src={require("../assets/images/user.png")} alt="" />
             <div className="titles">
-              <h1 className="h1"> {title} </h1>
+              <h1 className="h1"> {proiect ? proiect.title : null} </h1>
               <p className="p1">
                 Explore our vision for a rewarding tomorrow, where engagement
                 ignites innovation and collaboration leads the way. Join us as
@@ -180,7 +203,7 @@ function Project() {
                 </Link>
                 {/* aici pui tu chestia cu id */}
                 <Link
-                  to={"/create-task/" + id_task}
+                  to={"/create-task/" + title}
                   className="longl"
                   id="blur"
                 >
@@ -193,7 +216,7 @@ function Project() {
           </header>
           <div className="line"></div>
           <div className="taske">
-            {json.tasks.map((task) => {
+            {Object.keys(tasks).length > 0 && tasks.map((task) => {
               return (
                 <div className="task">
                   {/* aici e buton de stergere daca e gen user proprietar */}

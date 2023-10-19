@@ -74,6 +74,7 @@ function CreateCommunity({ user }) {
     let requirements = [name, user.id, description, website, category, twitter, discord, telegram, wallet]
     requirements.forEach((req, index) => {
       if (req == undefined || req == null || req == '') {
+        console.log(req, index)
         console.warn('Field(s) not filled.')
         ok = false
       }

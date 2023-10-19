@@ -10,7 +10,7 @@ import Side from "../components/Side";
 import axios_config from "../utils/AxiosConfig";
 import { projects } from "../utils/Links";
 
-function Home({user, logout}) {
+function Home({ user, logout }) {
   const [tags, setTag] = useState(["Gaming", "Startup", "Music", "Metaverse", "Education", "NFT"]);
   const [tagIndex, setTagIndex] = useState(0);
   const handleNextTag = () => {
@@ -44,6 +44,9 @@ function Home({user, logout}) {
         console.log(res)
         if (res.status == 401) {
           console.log('atuh')
+        } else {
+          setCardCategoryList(res.data)
+          console.log(res.data)
         }
       })
       // .catch((e)=>{
@@ -103,11 +106,11 @@ function Home({user, logout}) {
             </div>
           ) : (
             <div className="logout">
-            <Link to={"/login"}>
-              <div className="button but1">
-                <h4 className="button">Login</h4>
-              </div>
-            </Link>
+              <Link to={"/login"}>
+                <div className="button but1">
+                  <h4 className="button">Login</h4>
+                </div>
+              </Link>
               <Link to={"/register"}>
                 <div className="button but2">
                   <h4 className="button">Register</h4>
@@ -163,7 +166,7 @@ function Home({user, logout}) {
           <div className="proiecte">
             {filteredList.map((proiect) => {
               return (
-                <Link to={"/proiect/" + proiect.title} className="proiect">
+                <Link to={"/proiect/" + proiect.id} className="proiect">
                   <>
                     <h3 className="title">{proiect.title}</h3>
                     <p className="p1">

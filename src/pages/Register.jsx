@@ -64,7 +64,7 @@ function Register({ user }) {
               <span className="green_text">LANE</span>?
             </h3>
             <br />
-            <Link to="/auth">
+            <Link to="/login">
               <div className="button but1">
                 <h4 className="button">Login into account</h4>
               </div>

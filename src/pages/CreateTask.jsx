@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import "../assets/style/login.scss";
 import { Link, useParams } from "react-router-dom";
+import axios_config from "../utils/AxiosConfig";
+import { projects } from "../utils/Links";
 
 function CreateTask() {
   const { id } = useParams();
@@ -47,7 +49,28 @@ function CreateTask() {
   //   setrecurrence((prevrecurrence) => [...prevrecurrence, "Once"]);
   // }, []);
 
-
+  const create_task = () => {
+    let ok = true
+    let requirements = [id, name, description, link, xp]
+    requirements.forEach((req, index) => {
+      if (req == undefined || req == null || req == '') {
+        console.log(req, index)
+        console.warn('Field(s) not filled.')
+        ok = false
+      }
+    })
+    if (ok == true)
+      axios_config.post(`${projects}/${id}/addTask`, {
+        title: name,
+        description: description,
+        link: link,
+        reward: xp
+      }).then((res) => {
+        // console.log(res.data)
+      }).catch(e => {
+        console.warn(e)
+      })
+  }
 
   const [name, setName] = useState("");
   function handleNameChange(e) {
@@ -74,7 +97,10 @@ function CreateTask() {
     setXP(e.target.value);
   }
 
-
+  const [link, setLink] = useState("")
+  function handleLinkChange(e) {
+    setLink(e.target.value)
+  }
 
   return (
     <div className="auth">
@@ -123,22 +149,29 @@ function CreateTask() {
             onChange={handleDescriptionChange}
           />
 
-          <p className="bold_p">Submission Type</p>
-          <div className="tags">
-            <select name="submission_types" id="submission_types" onChange={handlesubmission_typeChange}>
-              {submission_types.map((submission_type, index) => (
-                <option value={index}>{submission_type}</option>
-              ))}
-            </select>
-          </div>
-          <p className="bold_p">Recurrence</p>
+          {/* <p className="bold_p">Submission Type</p>
+            <div className="tags">
+              <select name="submission_types" id="submission_types" onChange={handlesubmission_typeChange}>
+                {submission_types.map((submission_type, index) => (
+                  <option value={index}>{submission_type}</option>
+                ))}
+              </select>
+            </div> */}
+          <p className="bold_p">Additional link</p>
+          <textarea
+            id="link"
+            placeholder="Insert link"
+            rows={5}
+            onChange={handleLinkChange}
+          />
+          {/* <p className="bold_p">Recurrence</p>
           <div className="tags">
             <select name="recurrence" id="recurrence" onChange={handleRecurrenceChange}>
               {recurrence.map((recurrence, index) => (
                 <option value={index}>{recurrence}</option>
               ))}
             </select>
-          </div>
+          </div> */}
 
           <p className="bold_p">Reward - FL</p>
           <input
@@ -151,7 +184,7 @@ function CreateTask() {
 
           <br />
 
-          <div className="button but3_1">
+          <div className="button but3_1" onClick={()=>{create_task()}}>
             <h4 className="button">Create your task</h4>
           </div>
         </div>
