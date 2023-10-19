@@ -46,6 +46,16 @@ public class ProjectsController {
         return ResponseEntity.ok(false);
     }
 
+    @GetMapping("{project_id}/getSolves")
+    public ResponseEntity<?> getSolves(@PathVariable String project_id) {
+        Optional<Projects> project = projectsRepository.findById(project_id);
+        if (project.isPresent()) {
+            List<Solve> solves = project.get().getSolves();
+            return ResponseEntity.ok(solves);
+        }
+        return ResponseEntity.ok(false);
+    }
+
     @DeleteMapping("{project_id}/deleteSolve/{username}")
     public ResponseEntity<?> deleteSolve(@PathVariable String project_id, @PathVariable String username) {
         Optional<Projects> project = projectsRepository.findById(project_id);
