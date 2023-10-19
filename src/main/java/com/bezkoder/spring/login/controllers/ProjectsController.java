@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -148,8 +149,8 @@ public class ProjectsController {
 
 
     @PostMapping("/addProject")
-    public ResponseEntity<?> addProjects(@RequestBody ProjectRequest projectRequest) {
-        Projects project = new Projects(projectRequest.getImg(), projectRequest.getUser_id(), projectRequest.getTitle(), projectRequest.getDescription(), projectRequest.getLink(), projectRequest.getTwitter(), projectRequest.getDiscord(),  projectRequest.getTelegram(), projectRequest.getWallet(), projectRequest.getCategory());
+    public ResponseEntity<?> addProjects(@Valid @RequestBody ProjectRequest projectRequest) {
+        Projects project = new Projects(projectRequest.getUser_id(), projectRequest.getImg(), projectRequest.getTitle(), projectRequest.getDescription(), projectRequest.getLink(), projectRequest.getTwitter(), projectRequest.getDiscord(), projectRequest.getTelegram(), projectRequest.getWallet(), projectRequest.getCategory());
         projectsRepository.save(project);
         return ResponseEntity.ok(project);
     }

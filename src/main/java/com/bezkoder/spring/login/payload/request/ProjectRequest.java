@@ -1,15 +1,27 @@
 package com.bezkoder.spring.login.payload.request;
 
+import javax.validation.constraints.NotBlank;
+
 public class ProjectRequest {
+    @NotBlank
     private String img;
+    @NotBlank
     private String title;
+    @NotBlank
     private String user_id;
+    @NotBlank
     private String description;
+    @NotBlank
     private String link;
+    @NotBlank
     private String category;
+    @NotBlank
     private String twitter;
+    @NotBlank
     private String discord;
+    @NotBlank
     private String telegram;
+    @NotBlank
     private String wallet;
 
     public String getTwitter() {

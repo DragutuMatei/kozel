@@ -24,7 +24,7 @@ public class Projects {
     private List<Tasks> tasks;
     private List<Solve> solves;
 
-    public Projects(String img, String user_id, String title, String description, String link, String twitter, String discord, String telegram, String wallet, String category) {
+    public Projects( String user_id,String img, String title, String description, String link, String twitter, String discord, String telegram, String wallet, String category) {
         this.user_id = user_id;
         this.img = img;
         this.title = title;
