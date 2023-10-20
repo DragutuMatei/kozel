@@ -4,10 +4,7 @@ import com.bezkoder.spring.login.models.Projects;
 import com.bezkoder.spring.login.models.Solve;
 import com.bezkoder.spring.login.models.Tasks;
 import com.bezkoder.spring.login.models.User;
-import com.bezkoder.spring.login.payload.request.ProjectRequest;
-import com.bezkoder.spring.login.payload.request.ProjectUserRequest;
-import com.bezkoder.spring.login.payload.request.SolveRequest;
-import com.bezkoder.spring.login.payload.request.TaskRequest;
+import com.bezkoder.spring.login.payload.request.*;
 import com.bezkoder.spring.login.repository.ProjectsRepository;
 import com.bezkoder.spring.login.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +29,7 @@ public class ProjectsController {
     UserRepository userRepository;
 
     @PostMapping("{project_id}/{index_task}/addSolve")
-    public ResponseEntity<?> addSolve(@PathVariable String project_id,@PathVariable int index_task, @RequestBody SolveRequest solveRequest) {
+    public ResponseEntity<?> addSolve(@PathVariable String project_id, @PathVariable int index_task, @RequestBody SolveRequest solveRequest) {
         Optional<Projects> project = projectsRepository.findById(project_id);
         if (project.isPresent()) {
             List<Solve> solves = project.get().getTasks().get(index_task).getSolves();
@@ -57,7 +54,7 @@ public class ProjectsController {
     }
 
     @DeleteMapping("{project_id}/{index_task}/deleteSolve/{username}")
-    public ResponseEntity<?> deleteSolve(@PathVariable String project_id,@PathVariable int index_task,  @PathVariable String username) {
+    public ResponseEntity<?> deleteSolve(@PathVariable String project_id, @PathVariable int index_task, @PathVariable String username) {
         Optional<Projects> project = projectsRepository.findById(project_id);
         if (project.isPresent()) {
             List<Solve> solves = project.get().getTasks().get(index_task).getSolves();
@@ -70,14 +67,14 @@ public class ProjectsController {
     }
 
     @PostMapping("{project_id}/{index_task}/decideSolve/{username}")
-    public ResponseEntity<?> decideSolve(@PathVariable String project_id,@PathVariable int index_task, @PathVariable String username, @RequestBody boolean decide) {
+    public ResponseEntity<?> decideSolve(@PathVariable String project_id, @PathVariable int index_task, @PathVariable String username, @RequestBody SolveDecideRequest solveDecideRequest) {
         Optional<Projects> project = projectsRepository.findById(project_id);
         if (project.isPresent()) {
             List<Solve> solves = project.get().getTasks().get(index_task).getSolves();
             Solve solve = new Solve();
             for (Solve found_solve : solves) {
                 if (found_solve.getUsername().equals(username)) {
-                    solve.setAccept(decide);
+                    solve.setAccept(solveDecideRequest.isDecide());
                     solve.setViewed(true);
                     project.get().getTasks().get(index_task).setSolves(solves);
                     projectsRepository.save(project.get());
