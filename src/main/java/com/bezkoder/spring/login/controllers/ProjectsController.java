@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +30,7 @@ public class ProjectsController {
     UserRepository userRepository;
 
     @PostMapping("{project_id}/{index_task}/addSolve")
-    public ResponseEntity<?> addSolve(@PathVariable String project_id, @PathVariable int index_task,@Valid @RequestBody SolveRequest solveRequest) {
+    public ResponseEntity<?> addSolve(@PathVariable String project_id, @PathVariable int index_task, @Valid @RequestBody SolveRequest solveRequest) {
         Optional<Projects> project = projectsRepository.findById(project_id);
         if (project.isPresent()) {
             List<Solve> solves = project.get().getTasks().get(index_task).getSolves();
@@ -72,7 +73,7 @@ public class ProjectsController {
     }
 
     @PostMapping("{project_id}/{index_task}/decideSolve/{username}")
-    public ResponseEntity<?> decideSolve(@PathVariable String project_id, @PathVariable int index_task, @PathVariable String username,@Valid @RequestBody SolveDecideRequest solveDecideRequest) {
+    public ResponseEntity<?> decideSolve(@PathVariable String project_id, @PathVariable int index_task, @PathVariable String username, @Valid @RequestBody SolveDecideRequest solveDecideRequest) {
         Optional<Projects> project = projectsRepository.findById(project_id);
         if (project.isPresent()) {
             List<Solve> solves = project.get().getTasks().get(index_task).getSolves();
@@ -91,7 +92,7 @@ public class ProjectsController {
 
 
     @PostMapping("/{project_id}/addUser")
-    public ResponseEntity<?> addUser(@PathVariable String project_id,@Valid @RequestBody ProjectUserRequest projectUserRequest) {
+    public ResponseEntity<?> addUser(@PathVariable String project_id, @Valid @RequestBody ProjectUserRequest projectUserRequest) {
         Optional<Projects> project = projectsRepository.findById(project_id);
 
         if (project.isPresent()) {
@@ -198,6 +199,5 @@ public class ProjectsController {
         }
         return ResponseEntity.ok(projects);
     }
-
-
 }
+
