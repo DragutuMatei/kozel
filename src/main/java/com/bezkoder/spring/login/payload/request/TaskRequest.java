@@ -1,9 +1,16 @@
 package com.bezkoder.spring.login.payload.request;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class TaskRequest {
+    @NotBlank
     private String title;
+    @NotBlank
     private String description;
+    @NotBlank
     private String link;
+    @NotNull
     private int reward;
 
     public String getTitle() {

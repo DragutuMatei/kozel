@@ -1,6 +1,10 @@
 package com.bezkoder.spring.login.payload.request;
 
+import javax.validation.constraints.NotBlank;
+
 public class ProjectUserRequest {
+
+    @NotBlank
     private String user_id;
 
     public String getUser_id() {

@@ -29,15 +29,20 @@ public class ProjectsController {
     UserRepository userRepository;
 
     @PostMapping("{project_id}/{index_task}/addSolve")
-    public ResponseEntity<?> addSolve(@PathVariable String project_id, @PathVariable int index_task, @RequestBody SolveRequest solveRequest) {
+    public ResponseEntity<?> addSolve(@PathVariable String project_id, @PathVariable int index_task,@Valid @RequestBody SolveRequest solveRequest) {
         Optional<Projects> project = projectsRepository.findById(project_id);
         if (project.isPresent()) {
             List<Solve> solves = project.get().getTasks().get(index_task).getSolves();
             Solve solve = new Solve(solveRequest.getUsername(), solveRequest.getImg());
-            solves.add(solve);
-            project.get().getTasks().get(index_task).setSolves(solves);
-            projectsRepository.save(project.get());
-            return ResponseEntity.ok(true);
+            if (!solves.contains(solve)) {
+
+
+                solves.add(solve);
+                project.get().getTasks().get(index_task).setSolves(solves);
+                projectsRepository.save(project.get());
+                return ResponseEntity.ok(true);
+            } else
+                return ResponseEntity.ok(true);
         }
 
         return ResponseEntity.ok(false);
@@ -67,18 +72,17 @@ public class ProjectsController {
     }
 
     @PostMapping("{project_id}/{index_task}/decideSolve/{username}")
-    public ResponseEntity<?> decideSolve(@PathVariable String project_id, @PathVariable int index_task, @PathVariable String username, @RequestBody SolveDecideRequest solveDecideRequest) {
+    public ResponseEntity<?> decideSolve(@PathVariable String project_id, @PathVariable int index_task, @PathVariable String username,@Valid @RequestBody SolveDecideRequest solveDecideRequest) {
         Optional<Projects> project = projectsRepository.findById(project_id);
         if (project.isPresent()) {
             List<Solve> solves = project.get().getTasks().get(index_task).getSolves();
-            Solve solve = new Solve();
             for (Solve found_solve : solves) {
                 if (found_solve.getUsername().equals(username)) {
-                    solve.setAccept(solveDecideRequest.isDecide());
-                    solve.setViewed(true);
+                    found_solve.setAccept(solveDecideRequest.isDecide());
+                    found_solve.setViewed(true);
                     project.get().getTasks().get(index_task).setSolves(solves);
                     projectsRepository.save(project.get());
-                    return ResponseEntity.ok(true);
+                    return ResponseEntity.ok(project.get().getTasks().get(index_task).getSolves());
                 }
             }
         }
@@ -87,16 +91,18 @@ public class ProjectsController {
 
 
     @PostMapping("/{project_id}/addUser")
-    public ResponseEntity<?> addUser(@PathVariable String project_id, @RequestBody ProjectUserRequest projectUserRequest) {
+    public ResponseEntity<?> addUser(@PathVariable String project_id,@Valid @RequestBody ProjectUserRequest projectUserRequest) {
         Optional<Projects> project = projectsRepository.findById(project_id);
 
         if (project.isPresent()) {
             List<User> users = project.get().getUsers();
             Optional<User> user = userRepository.findById(projectUserRequest.getUser_id());
             if (user.isPresent()) {
-                users.add(user.get());
-                project.get().setUsers(users);
-                projectsRepository.save(project.get());
+                if (!users.contains(user.get())) {
+                    users.add(user.get());
+                    project.get().setUsers(users);
+                    projectsRepository.save(project.get());
+                } else return ResponseEntity.ok(false);
             } else {
                 return ResponseEntity.ok(false);
             }
@@ -116,7 +122,7 @@ public class ProjectsController {
     }
 
     @PostMapping("/{project_id}/addTask")
-    public ResponseEntity<?> addTask(@PathVariable String project_id, @RequestBody TaskRequest taskRequest) {
+    public ResponseEntity<?> addTask(@PathVariable String project_id, @Valid @RequestBody TaskRequest taskRequest) {
         Tasks task = new Tasks(taskRequest.getTitle(), taskRequest.getDescription(), taskRequest.getLink(), taskRequest.getReward());
 
         Optional<Projects> project = projectsRepository.findById(project_id);

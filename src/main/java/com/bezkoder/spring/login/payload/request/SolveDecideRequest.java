@@ -1,6 +1,9 @@
 package com.bezkoder.spring.login.payload.request;
 
+import javax.validation.constraints.NotBlank;
+
 public class SolveDecideRequest {
+//    @NotBlank
     public boolean decide;
 
     public boolean isDecide() {

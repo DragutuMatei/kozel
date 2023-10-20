@@ -145,4 +145,23 @@ public class Projects {
     public void setImg(String img) {
         this.img = img;
     }
+
+    @Override
+    public String toString() {
+        return "Projects{" +
+                "id='" + id + '\'' +
+                ", user_id='" + user_id + '\'' +
+                ", img='" + img + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", link='" + link + '\'' +
+                ", twitter='" + twitter + '\'' +
+                ", discord='" + discord + '\'' +
+                ", telegram='" + telegram + '\'' +
+                ", wallet='" + wallet + '\'' +
+                ", category='" + category + '\'' +
+                ", users=" + users +
+                ", tasks=" + tasks +
+                '}';
+    }
 }

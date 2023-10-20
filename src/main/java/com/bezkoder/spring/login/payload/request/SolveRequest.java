@@ -1,7 +1,11 @@
 package com.bezkoder.spring.login.payload.request;
 
+import javax.validation.constraints.NotBlank;
+
 public class SolveRequest {
+    @NotBlank
     private String username;
+    @NotBlank
     private String img;
 
     public String getUsername() {
