@@ -193,7 +193,6 @@ public class ProjectsController {
     @GetMapping("/getByUser/{user_id}")
     public ResponseEntity<?> getByUserId(@PathVariable String user_id) {
         List<Projects> projects = projectsRepository.findByUserId(user_id);
-
         if (projects.isEmpty()) {
             return ResponseEntity.ok(false);
         }

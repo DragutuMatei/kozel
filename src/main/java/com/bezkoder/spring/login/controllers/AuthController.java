@@ -78,12 +78,12 @@ public class AuthController {
 
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 
-//        manager.authenticate(new Web3Authentication(loginRequest.getAddress(), loginRequest.getSignature()));
+        manager.authenticate(new Web3Authentication(loginRequest.getAddress(), loginRequest.getSignature()));
 
-//        if (new Web3Authentication(loginRequest.getAddress(), loginRequest.getSignature()).isAuthenticated())
-//        {
-//            System.out.println("============================================OK============================");
-//        }
+        if (new Web3Authentication(loginRequest.getAddress(), loginRequest.getSignature()).isAuthenticated())
+        {
+            System.out.println("============================================OK============================");
+        }
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
                 .body(new User(
