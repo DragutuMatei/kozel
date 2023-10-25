@@ -6,3 +6,4 @@ FROM openjdk:17.0.1-jdk-slim
 COPY --from=build /target/spring-boot-login-example-0.0.1-SNAPSHOT.jar fastlane.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "fastlane.jar"]
+
