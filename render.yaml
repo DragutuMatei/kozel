@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: spring
+    runtime: docker
+    env: docker
+
+  - type: pserv
+    name: mongodb
+    env: docker
+    autoDeploy: false
+    disk:
+      name: data
+      mountPath: /data/db
+      sizeGB: 10
