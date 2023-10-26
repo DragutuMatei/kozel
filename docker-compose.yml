@@ -1,27 +1,14 @@
-version: "3"
-
+version: "3.7"
 services:
-  app:
-    container_name: app
-    image: app
-    build:
-      context: .
-      dockerfile: Dockerfile
+  api_service:
+    build: .
+    restart: always
+    ports:
+      - 8080:8080
     depends_on:
-      - database
+      - mongo_db
+  mongo_db:
+    image: "mongo:4.4.3"
+    restart: always
     ports:
-      - "8080:8080"
-    networks:
-      - app-network
-
-  database:
-    container_name: database
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge
+      - 27017:27017
