@@ -9,6 +9,7 @@ import com.bezkoder.spring.login.repository.ProjectsRepository;
 import com.bezkoder.spring.login.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -60,6 +61,7 @@ public class ProjectsController {
         return ResponseEntity.ok(false);
     }
 
+//    @PreAuthorize()
     @DeleteMapping("{project_id}/{index_task}/deleteSolve/{username}")
     public ResponseEntity<?> deleteSolve(@PathVariable String project_id, @PathVariable int index_task, @PathVariable String username) {
         Optional<Projects> project = projectsRepository.findById(project_id);

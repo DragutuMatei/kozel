@@ -86,7 +86,11 @@ public class AuthController {
             System.out.println("============================================OK============================");
         }
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add(HttpHeaders.SET_COOKIE, jwtCookie.toString());
+
+
+        return ResponseEntity.ok().headers(responseHeaders)
                 .body(new User(
                         userDetails.getId(),
                         userDetails.getUsername(),
