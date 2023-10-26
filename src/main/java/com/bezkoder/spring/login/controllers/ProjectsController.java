@@ -10,11 +10,14 @@ import com.bezkoder.spring.login.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @CrossOrigin(
@@ -61,7 +64,7 @@ public class ProjectsController {
         return ResponseEntity.ok(false);
     }
 
-//    @PreAuthorize()
+    //    @PreAuthorize()
     @DeleteMapping("{project_id}/{index_task}/deleteSolve/{username}")
     public ResponseEntity<?> deleteSolve(@PathVariable String project_id, @PathVariable int index_task, @PathVariable String username) {
         Optional<Projects> project = projectsRepository.findById(project_id);
@@ -125,20 +128,30 @@ public class ProjectsController {
             return ResponseEntity.ok(false);
     }
 
-    @PostMapping("/{project_id}/addTask")
-    public ResponseEntity<?> addTask(@PathVariable String project_id, @Valid @RequestBody TaskRequest taskRequest) {
-        Tasks task = new Tasks(taskRequest.getTitle(), taskRequest.getDescription(), taskRequest.getLink(), taskRequest.getReward());
+    @PostMapping("/{project_id}/{user_id}/addTask")
+    public ResponseEntity<?> addTask(@PathVariable String project_id, @PathVariable String user_id, @Valid @RequestBody TaskRequest taskRequest) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        Optional<Projects> project = projectsRepository.findById(project_id);
+        if (principal instanceof UserDetails) {
+            UserDetails user = (UserDetails) principal;
+            Optional<User> response = Optional.ofNullable(userRepository.findByUsername(user.getUsername()));
+            if (Objects.equals(user_id, response.get().getId())) {
 
-        if (project.isPresent()) {
-            List<Tasks> tasks = project.get().getTasks();
-            tasks.add(task);
-            project.get().setTasks(tasks);
-            projectsRepository.save(project.get());
+
+                Tasks task = new Tasks(taskRequest.getTitle(), taskRequest.getDescription(), taskRequest.getLink(), taskRequest.getReward());
+                Optional<Projects> project = projectsRepository.findById(project_id);
+
+                if (project.isPresent()) {
+                    List<Tasks> tasks = project.get().getTasks();
+                    tasks.add(task);
+                    project.get().setTasks(tasks);
+                    projectsRepository.save(project.get());
+                }
+
+                return ResponseEntity.ok(task);
+            }
         }
-
-        return ResponseEntity.ok(task);
+        return  ResponseEntity.ok(false);
     }
 
     @DeleteMapping("{project_id}/deleteTask/{task_id}")
