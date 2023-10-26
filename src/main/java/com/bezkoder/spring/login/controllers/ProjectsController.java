@@ -130,28 +130,47 @@ public class ProjectsController {
 
     @PostMapping("/{project_id}/{user_id}/addTask")
     public ResponseEntity<?> addTask(@PathVariable String project_id, @PathVariable String user_id, @Valid @RequestBody TaskRequest taskRequest) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof UserDetails) {
-            UserDetails user = (UserDetails) principal;
-            Optional<User> response = Optional.ofNullable(userRepository.findByUsername(user.getUsername()));
-            if (Objects.equals(user_id, response.get().getId())) {
 
 
-                Tasks task = new Tasks(taskRequest.getTitle(), taskRequest.getDescription(), taskRequest.getLink(), taskRequest.getReward());
-                Optional<Projects> project = projectsRepository.findById(project_id);
+        Tasks task = new Tasks(taskRequest.getTitle(), taskRequest.getDescription(), taskRequest.getLink(), taskRequest.getReward());
+        Optional<Projects> project = projectsRepository.findById(project_id);
 
-                if (project.isPresent()) {
-                    List<Tasks> tasks = project.get().getTasks();
-                    tasks.add(task);
-                    project.get().setTasks(tasks);
-                    projectsRepository.save(project.get());
-                }
-
-                return ResponseEntity.ok(task);
+        if (project.isPresent()) {
+            if (project.get().getUser_id().equals(user_id)) {
+                List<Tasks> tasks = project.get().getTasks();
+                tasks.add(task);
+                project.get().setTasks(tasks);
+                projectsRepository.save(project.get());
+            } else {
+                throw new UnknownAddress("ayaye");
             }
+        } else {
+            throw new UnknownAddress("ayaye2");
         }
-        return  ResponseEntity.ok(false);
+
+        return ResponseEntity.ok(task);
+
+//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//
+//        if (principal instanceof UserDetails) {
+//            UserDetails user = (UserDetails) principal;
+//            Optional<User> response = Optional.ofNullable(userRepository.findByUsername(user.getUsername()));
+//            if (Objects.equals(user_id, response.get().getId())) {
+//
+//                Tasks task = new Tasks(taskRequest.getTitle(), taskRequest.getDescription(), taskRequest.getLink(), taskRequest.getReward());
+//                Optional<Projects> project = projectsRepository.findById(project_id);
+//
+//                if (project.isPresent()) {
+//                    List<Tasks> tasks = project.get().getTasks();
+//                    tasks.add(task);
+//                    project.get().setTasks(tasks);
+//                    projectsRepository.save(project.get());
+//                }
+//
+//                return ResponseEntity.ok(task);
+//            }
+//        }
+//        return  ResponseEntity.ok(false);
     }
 
     @DeleteMapping("{project_id}/deleteTask/{task_id}")
@@ -215,4 +234,5 @@ public class ProjectsController {
         return ResponseEntity.ok(projects);
     }
 }
+
 
