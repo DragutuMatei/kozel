@@ -3,12 +3,10 @@ services:
     name: spring
     runtime: docker
     env: docker
+    plan: free
 
   - type: pserv
     name: mongodb
     env: docker
     autoDeploy: false
-    disk:
-      name: data
-      mountPath: /data/db
-      sizeGB: 10
+    plan: free
