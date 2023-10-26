@@ -7,3 +7,7 @@ COPY --from=build /target/spring-boot-login-example-0.0.1-SNAPSHOT.jar fastlane.
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "fastlane.jar"]
 
+# CMD ["docker","pull","mongo"]
+
+FROM mongo:latest
+CMD ["docker","run","-d","-p","27017:27017","--name","mongo","mongo"]
