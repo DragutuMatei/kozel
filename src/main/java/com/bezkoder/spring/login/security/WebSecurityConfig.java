@@ -1,6 +1,7 @@
 package com.bezkoder.spring.login.security;
 
 import com.bezkoder.spring.login.Metamask.Web3AuthenticationProvider;
+import com.sun.net.httpserver.HttpsServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -68,6 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/api/auth/**", "/api/auth/challenge/{username}/{address}", "/api/auth/signin", "/api/auth/userInfo", "/api/auth/signup").permitAll()
                 .antMatchers("/api/test/**").permitAll();
 //                .anyRequest().authenticated();
+
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
