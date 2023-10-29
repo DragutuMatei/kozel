@@ -1,7 +1,6 @@
 package com.bezkoder.spring.login.models;
 
 
-
 import org.springframework.data.annotation.Id;
 
 import org.springframework.data.annotation.Id;
@@ -17,10 +16,6 @@ public class User {
 
     private String username;
 
-    private String email;
-
-    private String password;
-
     private String address;
 
     private String nonce;
@@ -28,25 +23,27 @@ public class User {
     public User() {
     }
 
-    public User(String id, String username, String email, String address) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.address = address;
-    }
 
-    public User(String username, String email, String password) {
+    public User(String username, String address) {
         this.username = username;
-        this.email = email;
-        this.password = password;
+        this.address = address;
         this.nonce = UUID.randomUUID().toString();
     }
 
-    public User(String id, String username, String email, String password, String address, String nonce) {
+//    public User(String username) {
+//        this.username = username;
+//        this.nonce = UUID.randomUUID().toString();
+//    }
+
+    public User(String address) {
+        this.address = address;
+        this.nonce = UUID.randomUUID().toString();
+    }
+
+
+    public User(String id, String username, String address, String nonce) {
         this.id = id;
         this.username = username;
-        this.email = email;
-        this.password = password;
         this.address = address;
         this.nonce = nonce;
     }
@@ -65,22 +62,6 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getAddress() {

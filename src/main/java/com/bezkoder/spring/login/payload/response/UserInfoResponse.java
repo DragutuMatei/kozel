@@ -5,9 +5,6 @@ import java.util.List;
 public class UserInfoResponse {
     private String id;
     private String username;
-    private String email;
-
-
     private String address;
 
     private String nonce;
@@ -15,10 +12,9 @@ public class UserInfoResponse {
     public UserInfoResponse() {
     }
 
-    public UserInfoResponse(String id, String username, String email, String address, String nonce) {
+    public UserInfoResponse(String id, String username,  String address, String nonce) {
         this.id = id;
         this.username = username;
-        this.email = email;
         this.address = address;
         this.nonce = nonce;
     }
@@ -45,14 +41,6 @@ public class UserInfoResponse {
 
     public void setNonce(String nonce) {
         this.nonce = nonce;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getUsername() {

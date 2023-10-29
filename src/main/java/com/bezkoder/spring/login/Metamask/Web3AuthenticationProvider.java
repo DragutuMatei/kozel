@@ -45,16 +45,22 @@ public class Web3AuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) {
         User user = users.findByAddress(authentication.getName());
 
-        System.out.println("akjdfbsdkfbj kdjbfkjdbskajbdsgbkj");
-        System.out.println(authentication.getName());
-        System.out.println(user.toString());
+        System.out.println("================1=================");
+//        System.out.println(authentication.getName());
+        System.out.print("Username: ");
+        System.out.println(user.getUsername());
 
         if (user != null) {
             String signature = authentication.getCredentials().toString();
+            System.out.print("signature: ");
+            System.out.println(signature);
             try {
                 if (valid(signature, user.getAddress(), user.getNonce())) {
+                    System.out.println("merge");
                     return new Web3Authentication(user.getAddress(), signature);
-                }
+                }else
+                    System.out.println("nu merge");
+
             } catch (SignatureException e) {
                 throw new BadCredentialsException(authentication.getName() + " is not allowed to log in.");
 
