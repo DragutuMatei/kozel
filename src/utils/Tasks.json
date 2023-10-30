@@ -1,0 +1,52 @@
+{
+  "tasks": [
+    {
+      "title": "Twitter follow",
+      "description": "Follow us on twitter",
+      "link": "https://twitter.com/exemple",
+      "reward": "2"
+    },
+    {
+      "title": "Getting Started",
+      "description": "Here are the basics:",
+      "list1": [
+        "Type 1. + space to create an ordered list, - for bullet points and [] for a todo list. You can indent using tabs.",
+        "Mark any text and use keyboard shortcuts or toolbar to make text bold (cmd+b), italic (cmd+shift+i) or underscored (cmd+u)",
+        "Type #, ##, ### to create headlines.",
+        "Insert images by dropping them, pasting them or inserting from the toolbar.",
+        "Paste Youtube links to embed them"
+      ],
+      "desc2": "Concepts:",
+      "list2": [
+        "Submission type: how the user will prove that he/she completed the quest. All types except URL and image can be automatically validated",
+        "Recurrence: how often the user can complete the quest.",
+        "Conditions: controls which users and when they can access the quest"
+      ],
+      "reward": "2"
+    },
+    {
+      "title": "Invite in Discord 🎉",
+      "description": "Invite 10 people to the Discord. Track your invites with invites tracker in Discord",
+      "desc2": "Join the 'BG Trade' server",
+      "reward": "2"
+    },
+    {
+      "title": "Visit FastLane Website",
+      "description": "Visit FastLane Website",
+      "link": "https://www.FastLane.io/",
+      "reward": "2"
+    },
+    {
+      "title": "Follow FastLane QuestN",
+      "description": "Follow FastLane QuestN",
+      "link": "https://demo.fastlane.buzz/",
+      "reward": "2"
+    },
+    {
+      "title": "Read our docs",
+      "description": "Follow FastLane Medium",
+      "link": "https://demo.fastlane.buzz/",
+      "reward": "2"
+    }
+  ]
+}

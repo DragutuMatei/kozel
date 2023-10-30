@@ -1,0 +1,383 @@
+import React, { useEffect, useState } from "react";
+import "../assets/style/page.scss";
+import { IoIosClose } from "react-icons/io";
+import { RiTwitterXFill } from "react-icons/ri";
+import { BsDiscord, BsMapFill } from "react-icons/bs";
+import { FaEdit, FaTelegramPlane } from "react-icons/fa";
+import { GiWallet } from "react-icons/gi";
+import json from "../utils/Tasks.json";
+import { Link, useParams } from "react-router-dom";
+import Side from "../components/Side";
+import { MdBarChart } from "react-icons/md";
+import axios_config from "../utils/AxiosConfig";
+import { projects } from "../utils/Links";
+
+function Project({ user }) {
+  const { id } = useParams();
+
+  const [isProofSubmited, setSubmitedProof] = useState(false);
+  const [display, setDisplay] = useState(false);
+  const [proiect, setProiect] = useState(null);
+  const [task, setTask] = useState(null);
+  const [taskIndex, setTaskIndex] = useState(null);
+  const [ok, setOk] = useState(false);
+
+  const discover = (task, index) => {
+    setTaskIndex(index);
+    setTask(task);
+    setOk(false);
+    console.log(task);
+    setDisplay(true);
+    console.log(task.solves.length);
+    console.log(ok);
+    for (let i = 0; i < task.solves.length; i++) {
+      const element = task.solves[i];
+      if (element.username == user.username) {
+        setOk(element.accept);
+        console.log("=-============", element.accept);
+      }
+    }
+  };
+
+  // aici faci tu altfel cu id
+  // var id_task = 0;
+
+  const [proof, setProof] = useState("");
+  function handleProofChange(e) {
+    const file = e.target.files[0];
+
+    let imageBase64Stringsep, base64String;
+    let reader = new FileReader();
+
+    reader.onload = function () {
+      base64String = reader.result;
+      imageBase64Stringsep = base64String;
+
+      setProof(base64String);
+      setSubmitedProof(true);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  const [msg, setMsg] = useState("");
+  const sendSolve = async () => {
+    if (proof != "")
+      await axios_config
+        .post(`${projects}/${proiect.id}/${taskIndex}/addSolve`, {
+          project_id: proiect.id,
+          index_task: taskIndex,
+          username: user.username,
+          img: proof,
+        })
+        .then((res) => {
+          console.log(res.data);
+          setMsg("Proof submited!");
+          //fa ceva cu raspunsul
+          //########################################
+          //########################################
+          //TODO
+        })
+        .catch((e) => {
+          console.warn(e);
+        });
+  };
+
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isPresent, setIsPresent] = useState(false);
+
+  // useEffect(() => {
+  //   const keyDownHandler = (event) => {
+  //     if (event.key === "Escape") {
+  //       event.preventDefault();
+  //       setDisplay(false);
+  //     }
+  //   };
+
+  //   document.addEventListener("keydown", keyDownHandler);
+
+  //   return () => {
+  //     document.removeEventListener("keydown", keyDownHandler);
+  //   };
+  // }, []);
+
+  const getProject = async () => {
+    console.log("asdad");
+    await axios_config.get(projects + `/getProject/${id}`).then(async (res) => {
+      setProiect(res.data);
+      if (res.data.user_id == user.id) {
+        setIsAdmin(true);
+        setIsPresent(true);
+        console.log("asddddddddddddddddddd");
+      } else
+        await axios_config.get(projects + `/${id}/getUsers`).then((res) => {
+          console.log("ooooooooooooooooooo");
+          console.log(res.data);
+          if (res.data.length != 0) {
+            if (res.data != false)
+              res.data.forEach((users) => {
+                if (user.id == users.id) {
+                  setIsPresent(true);
+                }
+              });
+          }
+        });
+    });
+  };
+  useEffect(() => {
+    getProject();
+    console.log("---------------------------------------------------");
+  }, [, id, window, user]);
+
+  return (
+    <>
+      <Side user={user} />
+
+      <div className="ok">
+        {display && task && (
+          <div
+            className="overlay"
+            onClick={(e) => {
+              if (e.target.className === "overlay") {
+                setDisplay(false);
+              }
+            }}
+          >
+            <div className="discover but3">
+              <IoIosClose
+                id="close"
+                onClick={() => {
+                  setDisplay(false);
+                }}
+              />
+              <div className="top">
+                <h3 className="h3">
+                  {task.title} <span id="once">ONCE</span>{" "}
+                </h3>
+              </div>
+              <div className="bottom">
+                <div className="left">
+                  {/* <Link to={"/auth"} className="button but1">
+                    <h4 className="button">Login</h4>
+                  </Link> */}
+                  <h4 className="buton">
+                    connected with{" "}
+                    <span className="green_text">@{user.username}</span>
+                  </h4>
+                  <h3 className="title">MISSION 🎯</h3>
+                  <p className="p1">{task.description}</p>
+                  {/* {proiect.list1 && (
+                    <ol>
+                      {proiect.list1.map((list, i) => {
+                        return (
+                          <li>
+                            <p className="bold_p">{list}</p>
+                          </li>
+                        );
+                      })}
+                    </ol>
+                  )} */}
+                  {/* {task.desc2 && <h3 className="h3">{task.desc2}</h3>}
+                  {task.list2 && (
+                    <ul>
+                      {task.list2.map((list) => {
+                        return (
+                          <li>
+                            <p className="bold_p">{list}</p>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )} */}
+                  {task.link && (
+                    <a href={task.link} target="_blank" className="green_text">
+                      {task.link.length > 40
+                        ? task.link.slice(0, 40) + "..."
+                        : task.link}
+                    </a>
+                  )}
+
+                  <div className="long">
+                    <h3 className="title" style={{ marginTop: 50 }}>
+                      To be checked 📝
+                    </h3>
+                    {task && task.type === "other" && (
+                      <>
+                        <p className="bold_p">Upload proof</p>
+                        {!ok && (
+                          <input
+                            type="file"
+                            id="proof"
+                            onChange={handleProofChange}
+                          />
+                        )}
+                        {!ok && isProofSubmited && (
+                          <>
+                            <button
+                              className="button but2 claim"
+                              onClick={() => {
+                                sendSolve();
+                              }}
+                            >
+                              <h6 className="h7">Submit</h6>
+                            </button>
+                          </>
+                        )}
+                        {msg != "" && <p className="p1">{msg}</p>}
+                        <br />
+                        <br />
+                      </>
+                    )}{" "}
+                    {ok ? (
+                      <p className="p1">Accepted</p>
+                    ) : (
+                      <p className="p1">Not accepted yet</p>
+                    )}
+                  </div>
+                  {/* <div className="line"></div>{" "}
+                  <p className="p1" style={{ textAlign: "center" }}>
+                    ⚠︎ After completion, it can take up to 10s before your claim
+                    succeeds.
+                  </p>
+                  <h4 className="claim">Claim FS Token</h4> */}
+                </div>
+                <div className="right">
+                  <h3 className="h3">Reward</h3>
+                  <h3 className="title">
+                    {task.reward}
+                    <img
+                      src={require("../assets/images/icon_logo.svg").default}
+                      alt=""
+                    />
+                  </h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {/* <Nav /> */}
+        <div className="page">
+          <div className="logout">
+            {/* <div className="button but2">
+              <h4 className="button">Connect with metamask</h4>
+            </div>  */}
+            {proiect && isAdmin && (
+              <Link to={"/admin/" + proiect.id}>
+                <div className="button but1">
+                  <h4 className="button">Admin Panel</h4>
+                </div>
+              </Link>
+            )}
+          </div>
+          <header>
+            <img src={`${proiect ? proiect.img : null}`} alt="" />
+            <div className="titles">
+              <h1 className="h1"> {proiect && proiect.title} </h1>
+              <p className="p1">{proiect && proiect.description}</p>
+              <div className="l">
+                <a target="_blank" href={proiect && proiect.twitter}>
+                  <RiTwitterXFill />
+                </a>{" "}
+                {/* <a href={proiect && proiect.discord}>
+                  <BsDiscord />
+                </a> */}
+                <a target="_blank" href={proiect && proiect.telegram}>
+                  <FaTelegramPlane />
+                </a>{" "}
+                {/* <a href={proiect && proiect.wallet}>
+                  <GiWallet />
+                </a> */}
+              </div>
+              <div className="l">
+                <Link to={`/proiect/${id}`} className="longl">
+                  <BsMapFill id="map" />
+                  <h3 className="p1">Quests</h3>
+                </Link>
+                <Link to={`/leaderboard/${id}`} className="longl">
+                  <MdBarChart id="chart" />
+                  <h3 className="p1">Leaderboard</h3>
+                </Link>
+                {/* aici pui tu chestia cu id */}
+
+                {isAdmin
+                  ? proiect && (
+                      <Link
+                        to={
+                          "/create-task/" +
+                          (proiect && proiect.id) +
+                          "/" +
+                          (proiect && proiect.user_id)
+                        }
+                        className="longl"
+                        id="blur"
+                      >
+                        {/* <Link to={"/create-task"} className="longl" id="blur"> */}
+                        <FaEdit id="map" />
+                        <h3 className="bold_p">Create task</h3>
+                      </Link>
+                    )
+                  : proiect &&
+                    user &&
+                    !isPresent && (
+                      <Link
+                        to=""
+                        className="longl"
+                        onClick={async () => {
+                          await axios_config
+                            .post(projects + `/${proiect.id}/addUser`, {
+                              user_id: user.id,
+                            })
+                            .then(async (res) => {
+                              await getProject();
+                              alert("Joined community");
+                            });
+                        }}
+                      >
+                        <h3 className="bold_p">Join Community</h3>
+                      </Link>
+                    )}
+              </div>
+            </div>
+          </header>
+          <div className="line"></div>
+          <div className="taske">
+            {isPresent || isAdmin ? (
+              proiect &&
+              proiect.tasks.map((task, index) => {
+                return (
+                  <div className="task">
+                    {isAdmin && (
+                      <div className="delete button">
+                        <h4 className="button">X</h4>
+                      </div>
+                    )}
+                    <h3 className="title">{task.title}</h3>
+                    <p className="p1">{task.description}</p>
+                    <div className="long">
+                      {isPresent && (
+                        <div
+                          className="button but2"
+                          onClick={() => discover(task, index)}
+                        >
+                          <h4 className="button">Complete task</h4>
+                        </div>
+                      )}{" "}
+                      <div className="button but1" id="xp">
+                        <h4 className="button">{task.reward}FS</h4>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <h2 className="title" style={{ color: "white" }}>
+                Join community first!
+              </h2>
+            )}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default Project;

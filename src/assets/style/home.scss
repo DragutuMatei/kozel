@@ -1,0 +1,10 @@
+.sherlock {
+  * a,
+  a .button,
+  a .delete.button {
+    &:not(.login) {
+      cursor: not-allowed !important;
+      pointer-events: none !important;
+    }
+  }
+}

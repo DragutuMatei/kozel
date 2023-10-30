@@ -1,0 +1,53 @@
+@import "./variabiles";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  overflow-x: hidden;
+  background: $black;
+}
+// @media screen and (min-width: 1200px) {
+//   nav {
+//     padding: 0px 100px;
+//   }
+// }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+span,
+button,
+p,
+a,
+ul li {
+  font-family: "Montserrat", Arial;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
+
+@import "./buttons";
+@import "./texts";
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px $dark_gray;
+  background-color: $dark_gray;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient($purple, $green);
+  border-radius: 90px;
+}

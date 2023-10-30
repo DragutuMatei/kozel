@@ -1,0 +1,277 @@
+// @media screen and (max-width: 960px) {
+//   .why_section .whys .col {
+//     width: 100%;
+//   }
+// }
+
+// @media screen and (max-width: 1020px) {
+//   .parts {
+//     .part {
+//       width: 100%;
+//       min-width: 0px;
+//       .texts {
+//         p {
+//           width: fit-content;
+//         }
+//       }
+//     }
+//   }
+// }
+// @media screen and (max-width: 881px) {
+//   footer .top .right {
+//     margin-top: 20px;
+//   }
+// }
+
+// @media screen and (max-width: 900px) {
+//   nav {
+//     .right {
+//       overflow: hidden;
+//       padding: 0 20px;
+//       position: fixed;
+//       top: 70px;
+//       left: 0;
+//       z-index: 99;
+//       background: $black;
+//       flex-direction: column;
+//       height: max-content;
+//       align-items: flex-start;
+//       .l,
+//       .r {
+//         flex-direction: column;
+//         height: max-content;
+//         align-items: flex-start;
+//       }
+//       .l .drop {
+//         margin: 15px 0;
+//       }
+//       .r {
+//         h4.button,
+//         .but3 {
+//           margin: 15px 0;
+//         }
+//       }
+//     }
+//   }
+//   .home {
+//     .f {
+//       #banner1 {
+//         max-width: none;
+//       }
+//     }
+//   }
+// }
+
+// @media screen and (max-width: 1020px) {
+//   .parts {
+//     padding: 0 20px;
+//   }
+// }
+// @media screen and (max-width: 1200px) {
+//   .home {
+//     padding: 30px 0;
+//     .border #banner2 {
+//       * {
+//         width: fit-content;
+//       }
+//       .buts {
+//         .button.but3_1,
+//         .button.but1 {
+//           margin-right: 20px;
+//         }
+//       }
+//     }
+//   }
+//   .padding {
+//     padding: 10px 30px;
+//   }
+// }
+
+// @media screen and (max-width: 768px) {
+//   .home {
+//     .us,
+//     .mockups,
+//     .tt {
+//       margin-top: 30px;
+//     }
+//   }
+// }
+// @media screen and (max-width: 450px) {
+//   .home {
+//     .f .h2 {
+//       margin-top: 0;
+//       font-size: 30px;
+//     }
+//   }
+// }
+
+// @media screen and (max-width: 750px) {
+//   .home {
+//     .border #banner2 .buts {
+//       width: 100%;
+//       flex-direction: column;
+//       .button {
+//         width: 100%;
+//       }
+//     }
+//   }
+// }
+
+@media screen and (max-width: 1233px) {
+  .ok .page .taske {
+    .task {
+      width: calc(50% - 20px);
+
+      &:first-of-type {
+        width: calc(100% - 20px);
+      }
+    }
+  }
+  .ok .page .proiecte {
+    .proiect {
+      width: calc(50% - 20px);
+
+    }
+    
+  }
+}
+
+@media screen and (max-width: 950px) {
+  .ok .page {
+    width: calc(100% - 88px);
+    header {
+      img {
+        width: 120px;
+        height: 120px;
+      }
+      .titles {
+        max-width: 80%;
+        .h1 {
+          font-size: 30px;
+          margin-bottom: 15px;
+        }
+        .p1 {
+          font-size: 14px;
+        }
+        .l {
+          margin: 15px 0;
+        }
+        .l:last-of-type {
+          flex-direction: column;
+        }
+      }
+    }
+  }
+  .overlay .discover .bottom .left .send svg {
+    display: none;
+  }
+}
+@media screen and (max-width: 805px) {
+  .ok .page .proiecte  {
+    .proiect {
+      width: calc(100% - 20px);
+    }
+  }
+  .ok .page .taske  {
+    .task {
+      width: calc(100% - 20px);
+    }
+  }
+}
+
+@media screen and (max-width: 770px) {
+  .overlay .discover .bottom {
+    flex-direction: column-reverse;
+    gap: 20px;
+    .left,
+    .right {
+      width: 100%;
+    }
+  }
+}
+
+@media screen and (max-width: 650px) {
+  .ok .page .board .om {
+    flex-direction: column;
+    .l,
+    .r {
+      h4 {
+        font-size: 15px !important;
+      }
+      h4.bold_p:not(.purple_text),
+      .vert_l {
+        // display: none;
+      }
+      h3 {
+        font-size: 15px !important;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 550px) {
+    .ok .page .board .om{
+        padding: 10px 5px;
+        .l .pers{
+            img{
+                display: none;
+            }
+        }
+    }
+  .ok .page {
+    padding: 30px 5px;
+    header {
+      .titles {
+        max-width: 100%;
+        margin: 0;
+        .l .longl {
+          width: auto;
+        }
+      }
+      img {
+        display: none;
+      }
+    }
+  }
+  .proiecte {
+    .proiect {
+      width: 100% !important;
+      min-width: auto !important;
+      .long {
+        flex-direction: column;
+        .but1, .but2{
+            margin-bottom: 20px;
+        }
+      }
+    }
+  }
+}
+
+// @media screen and (max-width: 1030px) {
+//   nav .hamb {
+//     display: flex;
+//   }
+//   aside {
+//     max-width: 0;
+//   }
+//   .page {
+//     padding: 0;
+//     padding-top: 90px;
+//     .content {
+//       padding: 2rem;
+//     }
+//   }
+// }
+
+// @media screen and (max-width:700px) {
+//   nav{
+//     padding: 0 20px;
+//     justify-content: flex-start;
+//     .logo{
+//       margin-left: 20px;
+//     }
+//     .search{
+//       display: none;
+//     }
+//   }
+// }
