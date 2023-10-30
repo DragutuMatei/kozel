@@ -35,7 +35,6 @@ function Side({ user }) {
         />
       </Link>
       <Link to={`/proiect/${"653ec9ada32dbe1f0d4d5de6"}`} className="link">
-        {/* <BsPlusLg /> */}
         <TbWorld />
       </Link>
       <div className="linie"></div>
