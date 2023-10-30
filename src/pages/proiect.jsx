@@ -198,7 +198,7 @@ function Project({ user }) {
 
                   <div className="long">
                     <h3 className="title" style={{ marginTop: 50 }}>
-                      To be checked 📝
+                      Waiting for validation 📝
                     </h3>
                     {task && task.type === "other" && (
                       <>

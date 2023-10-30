@@ -190,9 +190,28 @@ function CreateTask({ user }) {
               <div className="button but1" onClick={() => selectType("follow")}>
                 <h4 className="button">Follow on Twitter</h4>
               </div>
+              
+              <br />
+              <div className="button but1" onClick={() => selectType("retweet")}>
+                <h4 className="button">Retweet</h4>
+              </div>
               <br />
               <div className="button but1" onClick={() => selectType("other")}>
                 <h4 className="button">Other</h4>
+              </div>
+              <br />
+              <div
+                className="button but1 but2"
+                style={{ cursor: "not-allowed" }}
+              >
+                <h4 className="button">Discord (to be added)</h4>
+              </div>
+              <br />
+              <div
+                className="button but1 but2"
+                style={{ cursor: "not-allowed" }}
+              >
+                <h4 className="button">Telegram (to be added)</h4>
               </div>
               <br />
             </>

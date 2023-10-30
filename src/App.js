@@ -13,6 +13,7 @@ import axios_config from "./utils/AxiosConfig";
 import { auth } from "./utils/Links";
 import Cookies from "js-cookie";
 import Project from "./pages/proiect";
+import TwitterChecker from "./pages/Test";
 
 function App() {
   const [user, setUser] = useState("");
@@ -47,6 +48,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home logout={logout} user={user} />} />
+        <Route path="/test" element={<TwitterChecker />} />
         <Route path="/proiect/:id" element={<Project user={user} />} />
         <Route
           path="/create-community"
