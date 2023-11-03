@@ -13,24 +13,25 @@ public class Tasks {
     private String description;
     private String link;
     private int reward;
-    private List<Solve> solves;
+    private String type;
+    private List<Object> solves;
 
-    public List<Solve> getSolves() {
+    public List<Object> getSolves() {
         return solves;
     }
 
-    public void setSolves(List<Solve> solves) {
+    public void setSolves(List<Object> solves) {
         this.solves = solves;
     }
 
-
-    public Tasks(String title, String description, String link, int reward) {
+    public Tasks(String title, String description, String link, int reward, String type) {
         this.id = UUID.randomUUID().toString();
         this.title = title;
         this.description = description;
         this.link = link;
         this.reward = reward;
         this.solves = new ArrayList<>();
+        this.type = type;
     }
 
     public String getId() {
@@ -71,5 +72,13 @@ public class Tasks {
 
     public void setReward(int reward) {
         this.reward = reward;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
