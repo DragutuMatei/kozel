@@ -251,7 +251,7 @@ function CreateTask({ user }) {
 
               {type == "like" ? (
                 <>
-                  <p className="bold_p">Link to the post</p>
+                  <p className="bold_p">The post id</p>
                 </>
               ) : type === "follow" ? (
                 <>
