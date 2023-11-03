@@ -37,14 +37,6 @@ function Admin({ user }) {
     setTaskType(task.type);
   };
 
-  function handleAcceptAll(e) {
-    // bafta
-    console.log(e);
-  }
-
-  // aici faci tu altfel cu id
-  // var id_task = 0;
-
   const [proof, setProof] = useState("");
   function handleProofChange(e) {
     setProof(e.target.value);
@@ -141,17 +133,6 @@ function Admin({ user }) {
               />
               <div className="top">
                 <h3 className="h3">{proiect && proiect.title} </h3>
-                {taskType !== "other" && (
-                  <>
-                    <div
-                      className="button but1 aprprove-denial"
-                      style={{ width: "150px" }}
-                      onClick={handleAcceptAll}
-                    >
-                      <h4 className="button">Approve all</h4>
-                    </div>
-                  </>
-                )}
               </div>
               <div className="bottom">
                 {proiect && solves && solves.length != 0 ? (

@@ -8,7 +8,6 @@ import { projects } from "../utils/Links";
 function CreateTask({ user }) {
   const { id, user_id } = useParams();
   const [submission_types, setsubmission_types] = useState([]);
-
   useEffect(() => {
     // make it array of submission_types
     setsubmission_types((prevsubmission_type) => [
@@ -266,7 +265,6 @@ function CreateTask({ user }) {
               <input
                 type="text"
                 id="name"
-                placeholder="Link - mandatory"
                 onChange={handleLinkChange}
               />
 

@@ -45,18 +45,19 @@ function Project({ user }) {
   const [proof, setProof] = useState("");
   function handleProofChange(e) {
     const file = e.target.files[0];
+    if (file) {
+      let imageBase64Stringsep, base64String;
+      let reader = new FileReader();
 
-    let imageBase64Stringsep, base64String;
-    let reader = new FileReader();
+      reader.onload = function () {
+        base64String = reader.result;
+        imageBase64Stringsep = base64String;
 
-    reader.onload = function () {
-      base64String = reader.result;
-      imageBase64Stringsep = base64String;
-
-      setProof(base64String);
-      setSubmitedProof(true);
-    };
-    reader.readAsDataURL(file);
+        setProof(base64String);
+        setSubmitedProof(true);
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   const [xUsername, setxUsername] = useState("");
@@ -76,11 +77,8 @@ function Project({ user }) {
         })
         .then((res) => {
           console.log(res.data);
-          setMsg("Proof submited!");
-          //fa ceva cu raspunsul
-          //########################################
-          //########################################
-          //TODO
+          if (res.data) setMsg("Proof submited!");
+          else setMsg("Proof not submited!");
         })
         .catch((e) => {
           console.warn(e);
