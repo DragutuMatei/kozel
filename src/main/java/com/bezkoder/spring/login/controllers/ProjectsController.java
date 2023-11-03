@@ -40,7 +40,14 @@ public class ProjectsController {
                 if (sol instanceof Solve) {
                     if (((Solve) sol).getUsername().equals(solveRequest.getUsername())) {
                         System.out.println("=============");
+                        if (((Solve) sol).isViewed() && !((Solve) sol).isAccept()) {
+                            ((Solve) sol).setImg(solveRequest.getImg());
+                            project.get().getTasks().get(index_task).setSolves(solves);
+                            projectsRepository.save(project.get());
+                            return ResponseEntity.ok(true);
+                        }
                         ma_doare_ficatu = true;
+                        break;
                     }
                 }
             }
