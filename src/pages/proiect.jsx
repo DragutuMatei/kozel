@@ -59,11 +59,16 @@ function Project({ user }) {
     reader.readAsDataURL(file);
   }
 
+  const [xUsername, setxUsername] = useState("");
+  function handleUsernameChange(e) {
+    setxUsername(e.target.value);
+  }
+
   const [msg, setMsg] = useState("");
   const sendSolve = async () => {
-    if (proof != "")
+    if (task.type == "other") {
       await axios_config
-        .post(`${projects}/${proiect.id}/${taskIndex}/addSolve`, {
+        .post(projects + `/${proiect.id}/${taskIndex}/addOtherSolve`, {
           project_id: proiect.id,
           index_task: taskIndex,
           username: user.username,
@@ -80,6 +85,24 @@ function Project({ user }) {
         .catch((e) => {
           console.warn(e);
         });
+    } else if (task.type == "like") {
+      await axios_config
+        .post(
+          projects + `/${task.link}/${proiect.id}/${taskIndex}/addAutoSolve`,
+          {
+            xusername: xUsername,
+            username: user.username,
+          }
+        )
+        .then((res) => {
+          console.log(res.data);
+          if (res.data) setMsg("Validated!");
+          else setMsg("Not validated!");
+        })
+        .catch((e) => {
+          console.warn(e);
+        });
+    }
   };
 
   const [isAdmin, setIsAdmin] = useState(false);
@@ -188,19 +211,19 @@ function Project({ user }) {
                       })}
                     </ul>
                   )} */}
-                  {task.link && (
+                  {/* {task.link && (
                     <a href={task.link} target="_blank" className="green_text">
                       {task.link.length > 40
                         ? task.link.slice(0, 40) + "..."
                         : task.link}
                     </a>
-                  )}
+                  )} */}
 
                   <div className="long">
                     <h3 className="title" style={{ marginTop: 50 }}>
                       Waiting for validation 📝
                     </h3>
-                    {task && task.type === "other" && (
+                    {task && task.type === "other" ? (
                       <>
                         <p className="bold_p">Upload proof</p>
                         {!ok && (
@@ -225,13 +248,40 @@ function Project({ user }) {
                         {msg != "" && <p className="p1">{msg}</p>}
                         <br />
                         <br />
+                        {ok ? (
+                          <p className="p1">Accepted</p>
+                        ) : (
+                          <p className="p1">Not accepted yet</p>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <p className="bold_p">X username</p>
+                        {!ok && (
+                          <input
+                            type="text"
+                            id="proof"
+                            placeholder="@x_username"
+                            onChange={handleUsernameChange}
+                          />
+                        )}
+                        {!ok && (
+                          <>
+                            <button
+                              className="button but2 claim"
+                              onClick={() => {
+                                sendSolve();
+                              }}
+                            >
+                              <h6 className="h7">Submit</h6>
+                            </button>
+                          </>
+                        )}
+                        {msg != "" && <p className="p1">{msg}</p>}
+                        <br />
+                        <br />
                       </>
                     )}{" "}
-                    {ok ? (
-                      <p className="p1">Accepted</p>
-                    ) : (
-                      <p className="p1">Not accepted yet</p>
-                    )}
                   </div>
                   {/* <div className="line"></div>{" "}
                   <p className="p1" style={{ textAlign: "center" }}>

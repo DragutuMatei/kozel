@@ -156,9 +156,9 @@ function Home({ logout, user }) {
                     <div className="proiect">
                       <div
                         // onClick={() => delete_project(proiect.id)}
-                        class="delete button"
+                        className="delete button"
                       >
-                        <h4 class="button">X</h4>
+                        <h4 className="button">X</h4>
                       </div>
                       <Link to={"/proiect/" + proiect.id}>
                         <>

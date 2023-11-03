@@ -29,11 +29,18 @@ function Admin({ user }) {
   const [proiect, setProiect] = useState(null);
   const [solves, setSolves] = useState(null);
   const [taskIndex, setTaskIndex] = useState(null);
-  
+  const [taskType, setTaskType] = useState(null);
+
   const discover = (task, index) => {
     setTaskIndex(index);
     setDisplay(true);
+    setTaskType(task.type);
   };
+
+  function handleAcceptAll(e) {
+    // bafta
+    console.log(e);
+  }
 
   // aici faci tu altfel cu id
   // var id_task = 0;
@@ -134,6 +141,17 @@ function Admin({ user }) {
               />
               <div className="top">
                 <h3 className="h3">{proiect && proiect.title} </h3>
+                {taskType !== "other" && (
+                  <>
+                    <div
+                      className="button but1 aprprove-denial"
+                      style={{ width: "150px" }}
+                      onClick={handleAcceptAll}
+                    >
+                      <h4 className="button">Approve all</h4>
+                    </div>
+                  </>
+                )}
               </div>
               <div className="bottom">
                 {proiect && solves && solves.length != 0 ? (
@@ -145,40 +163,62 @@ function Admin({ user }) {
                         <h4 className="buton">
                           <span className="green_text">@{solve.username}</span>
                         </h4>
-                        <br />
-                        <div className="title">
-                          <img width={"100%"} src={solve.img} alt="" />
-                        </div>
-                        <div className="aprprove-denial">
-                          <div
-                            className="button but2"
-                            onClick={() => {
-                              decideTask(true, solve.username);
-                            }}
-                            style={{
-                              background:
-                                solve.viewed &&
-                                solve.accept &&
-                                "rgba(42, 255, 178, 0.4)",
-                            }}
-                          >
-                            <h4 className="button">Approve</h4>
-                          </div>
-                          <div
-                            className="button but1"
-                            style={{
-                              background:
-                                solve.viewed &&
-                                !solve.accept &&
-                                "rgba(113, 32, 216, 0.4)",
-                            }}
-                            onClick={() => {
-                              decideTask(false, solve.username);
-                            }}
-                          >
-                            <h4 className="button">Reject</h4>
-                          </div>
-                        </div>
+                        {taskType == "other" ? (
+                          <>
+                            <br></br>
+                            <div className="title">
+                              <img
+                                width={"100%"}
+                                src={solve.img}
+                                alt=""
+                                style={{
+                                  height: "300px",
+                                  objectFit: "contain",
+                                }}
+                              />
+                            </div>
+                            <div className="aprprove-denial">
+                              <div
+                                className="button but2"
+                                onClick={() => {
+                                  decideTask(true, solve.username);
+                                }}
+                                style={{
+                                  background:
+                                    solve.viewed &&
+                                    solve.accept &&
+                                    "rgba(42, 255, 178, 0.4)",
+                                }}
+                              >
+                                <h4 className="button">Approve</h4>
+                              </div>
+                              <div
+                                className="button but1"
+                                style={{
+                                  background:
+                                    solve.viewed &&
+                                    !solve.accept &&
+                                    "rgba(113, 32, 216, 0.4)",
+                                }}
+                                onClick={() => {
+                                  decideTask(false, solve.username);
+                                }}
+                              >
+                                <h4 className="button">Reject</h4>
+                              </div>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <h3>
+                              {solve.status == true ? (
+                                <>{"accepted"}</>
+                              ) : (
+                                <>{"not accepted"}</>
+                              )}{" "}
+                            </h3>
+                          </>
+                        )}
                       </div>
                     );
                   })

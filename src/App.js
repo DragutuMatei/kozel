@@ -58,8 +58,7 @@ function App() {
         <Route
           path="/login"
           element={<Login setUser={setUser} user={user} />}
-        />
-        {/* <Route path="/register" element={<Register user={user} />} /> */}
+        /> 
         <Route
           path="/create-task/:id/:user_id"
           element={<CreateTask user={user} />}

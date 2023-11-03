@@ -1,63 +1,22 @@
-import React, { useState } from 'react';
+import React from "react";
+import axios_config from "../utils/AxiosConfig";
+import { projects } from "../utils/Links";
 
-const TwitterChecker = () => {
-  const [username, setUsername] = useState('');
-  const [tweetId, setTweetId] = useState('');
-  const [liked, setLiked] = useState(null);
+const CONSUMER_KEY = "zAVN863kSaGShwVZaIEy7d81Z";
+const CONSUMER_SECRET = "GTDTEEYgIWKv65JosQ4A9uYl6QFeqxN6KHeebNfENyST0gNDi8";
 
-  const checkLikeStatus = async () => {
-    try {
-      const response = await fetch(
-        `https://api.twitter.com/2/tweets/${tweetId}/liking_users`,
-        {
-          headers: {
-            Authorization: `Bearer AAAAAAAAAAAAAAAAAAAAAPwVqwEAAAAA%2BH%2Fh46WtuAIrPJnNKbxjHUjcDcU%3DdmGY3lBnGOLHHJpwqYiuw7CK9IlBbIeRVQg6icd1kUsb1yQKvD`,
-          },
-        }
-      );
-
-      const data = await response.json();
-
-      // Check if the username is in the list of liking users
-      const userLiked = data.data.some(
-        (user) => user.username === username.toLowerCase()
-      );
-
-      setLiked(userLiked);
-    } catch (error) {
-      console.error('Error checking like status:', error);
-    }
-  };
+function Test() {
+  
 
   return (
-    <div>
-      <label>
-        Twitter Username:
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </label>
-      <br />
-      <label>
-        Tweet ID:
-        <input
-          type="text"
-          value={tweetId}
-          onChange={(e) => setTweetId(e.target.value)}
-        />
-      </label>
-      <br />
-      <button onClick={checkLikeStatus}>Check Like Status</button>
-      <br />
-      {liked === null ? null : liked ? (
-        <p>{`${username} liked the tweet!`}</p>
-      ) : (
-        <p>{`${username} did not like the tweet.`}</p>
-      )}
-    </div>
+    <button onClick={async() => {
+      await axios_config.get(projects + `/check-liked-tweet/Matei17078538/1716873524470821294`).then(res => {
+        console.log(res);
+      })
+    }} >
+      ceva
+    </button>
   );
-};
+}
 
-export default TwitterChecker;
+export default Test;
