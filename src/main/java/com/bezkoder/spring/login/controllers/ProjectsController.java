@@ -69,6 +69,43 @@ public class ProjectsController {
         return ResponseEntity.ok(false);
     }
 
+    @PostMapping("{project_id}/{index_task}/addSimpleAutoSolve")
+    public ResponseEntity<?> addAutoSolve(@PathVariable String project_id, @PathVariable int index_task, @Valid @RequestBody AutoSolveRequest autoSolveRequest) {
+        Optional<Projects> project = projectsRepository.findById(project_id);
+        if (project.isPresent()) {
+            List<Object> solves = project.get().getTasks().get(index_task).getSolves();
+            AutoSolve solve = new AutoSolve(autoSolveRequest.getUsername(), autoSolveRequest.getXusername());
+            boolean ma_doare_ficatu = false;
+            for (Object sol : solves) {
+                if (sol instanceof AutoSolve) {
+                    if (((AutoSolve) sol).getUsername().equals(autoSolveRequest.getUsername())) {
+                        System.out.println("=============");
+                        project.get().getTasks().get(index_task).setSolves(solves);
+                        projectsRepository.save(project.get());
+                        return ResponseEntity.ok(true);
+                    }
+                    ma_doare_ficatu = true;
+                    break;
+                }
+            }
+            if (!ma_doare_ficatu) {
+                solves.add(solve);
+                project.get().getTasks().get(index_task).setSolves(solves);
+                projectsRepository.save(project.get());
+                return ResponseEntity.ok(true);
+            }
+//            if (!solves.contains(solve)) {
+//                solves.add(solve);
+//                project.get().getTasks().get(index_task).setSolves(solves);
+//                projectsRepository.save(project.get());
+//                return ResponseEntity.ok(true);
+//            }
+            else return ResponseEntity.ok(false);
+        }
+
+        return ResponseEntity.ok(false);
+    }
+
 
     @PostMapping("{tweetId}/{project_id}/{index_task}/addAutoSolve")
     public ResponseEntity<?> addSolve(@PathVariable String tweetId, @PathVariable String project_id, @PathVariable int index_task, @Valid @RequestBody AutoSolveRequest autoSolveRequest) {
@@ -88,9 +125,7 @@ public class ProjectsController {
                     System.out.println(autoSolveRequest.getUsername());
                     System.out.println(autoSolveRequest.getXusername());
 
-//                    System.out.println();
                     System.out.println(autoSolveRequest.getXusername().equals(((AutoSolve) sol).getXusername()) && autoSolveRequest.getUsername().equals(((AutoSolve) sol).getUsername()));
-
 
                     if (((AutoSolve) sol).getUsername().equals(autoSolveRequest.getUsername()) && ((AutoSolve) sol).getXusername().equals(autoSolveRequest.getXusername())) {
                         System.out.println("((AutoSolve) sol).getUsername()");
@@ -102,7 +137,7 @@ public class ProjectsController {
             }
             System.out.println(help_pls);
 
-            if (help_pls) {
+            if (!help_pls) {
                 System.out.println("=======================================");
                 System.out.println(autoSolveRequest.getXusername());
                 System.out.println(tweetId);
