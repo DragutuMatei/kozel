@@ -10,7 +10,12 @@ import { MdBarChart } from "react-icons/md";
 import { Link, useParams } from "react-router-dom";
 import axios_config from "../utils/AxiosConfig";
 import { projects } from "../utils/Links";
-import { calculateUserPoints, extractTasks, hasValues, sortObjectToArray } from "../utils/flatter";
+import {
+  calculateUserPoints,
+  extractTasks,
+  hasValues,
+  sortObjectToArray,
+} from "../utils/flatter";
 
 function Liderboard({ user }) {
   const { id } = useParams();
@@ -21,52 +26,51 @@ function Liderboard({ user }) {
   const [isPresent, setIsPresent] = useState(false);
 
   const [completes, setCompletes] = useState([]);
-  const [scores, setScores] = useState([])
+  const [scores, setScores] = useState([]);
 
   const getProject = async () => {
     await axios_config.get(projects + `/getProject/${id}`).then(async (res) => {
       setProiect(res.data);
-      let aux = []; aux.push(res.data)
-      setTasks(extractTasks(aux))
+      let aux = [];
+      aux.push(res.data);
+      setTasks(extractTasks(aux));
       if (res.data.user_id == user.id) {
         setIsAdmin(true);
         setIsPresent(true);
       } else
-        await axios_config
-          .get(projects + `/${id}/getUsers`)
-          .then((res) => {
-            if (res.data.length != 0) {
-              res.data.forEach((users) => {
-                if (user.id == users.id) {
-                  setIsPresent(true);
-                }
-              });
-            }
-          });
+        await axios_config.get(projects + `/${id}/getUsers`).then((res) => {
+          if (res.data.length != 0) {
+            res.data.forEach((users) => {
+              if (user.id == users.id) {
+                setIsPresent(true);
+              }
+            });
+          }
+        });
     });
   };
 
   useEffect(() => {
     getProject();
-  }, [,user])
+  }, [, user]);
 
   useEffect(() => {
     if (tasks.length) {
-      setCompletes(calculateUserPoints(tasks))
-      let score = calculateUserPoints(tasks)
-      score = score.userPoints
-      score = sortObjectToArray(score)
-      score = score.reverse()
-      setScores(score)
+      setCompletes(calculateUserPoints(tasks));
+      let score = calculateUserPoints(tasks);
+      score = score.userPoints;
+      score = sortObjectToArray(score);
+      score = score.reverse();
+      setScores(score);
     }
-  }, [tasks])
+  }, [tasks]);
 
   // useEffect(() => {
   //   if (completes) {
-  //     console.log(hasValues(completes))
+  //     //console.log(hasValues(completes))
   //     // let score = completes.userPoints
   //     Object.keys(score).forEach(index => {
-  //       console.log(index, score[index])
+  //       //console.log(index, score[index])
   //     })
   //   }
   // }, [completes])
@@ -121,44 +125,49 @@ function Liderboard({ user }) {
 
                 {isAdmin
                   ? proiect && (
-                    <Link
-                      to={"/create-task/" + (proiect && proiect.id) +"/"+ (proiect && proiect.user_id)}
-                      className="longl"
-                      id="blur"
-                    >
-                      {/* <Link to={"/create-task"} className="longl" id="blur"> */}
-                      <FaEdit id="map" />
-                      <h3 className="bold_p">Create task</h3>
-                    </Link>
-                  )
+                      <Link
+                        to={
+                          "/create-task/" +
+                          (proiect && proiect.id) +
+                          "/" +
+                          (proiect && proiect.user_id)
+                        }
+                        className="longl"
+                        id="blur"
+                      >
+                        {/* <Link to={"/create-task"} className="longl" id="blur"> */}
+                        <FaEdit id="map" />
+                        <h3 className="bold_p">Create task</h3>
+                      </Link>
+                    )
                   : proiect &&
-                  user &&
-                  !isPresent && (
-                    <Link
-                      to=""
-                      className="longl"
-                      onClick={async () => {
-                        await axios_config
-                          .post(projects + `/${proiect.id}/addUser`, {
-                            user_id: user.id,
-                          })
-                          .then(async (res) => {
-                            await getProject();
-                            alert("Joined community");
-                          });
-                      }}
-                    >
-                      <h3 className="bold_p">Join Community</h3>
-                    </Link>
-                  )}
+                    user &&
+                    !isPresent && (
+                      <Link
+                        to=""
+                        className="longl"
+                        onClick={async () => {
+                          await axios_config
+                            .post(projects + `/${proiect.id}/addUser`, {
+                              user_id: user.id,
+                            })
+                            .then(async (res) => {
+                              await getProject();
+                              alert("Joined community");
+                            });
+                        }}
+                      >
+                        <h3 className="bold_p">Join Community</h3>
+                      </Link>
+                    )}
               </div>
             </div>
           </header>
           <div className="line"></div>
           <div className="board">
-            {
-              hasValues(completes) && scores.map((index, place) => {
-                console.log(completes)
+            {hasValues(completes) &&
+              scores.map((index, place) => {
+                //console.log(completes)
                 return (
                   <>
                     <div className="om">

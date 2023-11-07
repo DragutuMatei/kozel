@@ -11,7 +11,7 @@ function Side({ user }) {
 
   const getMy = async () => {
     // await axios_config.get(projects + `/getByUser/${user.id}`).then((res) => {
-    //   console.log("assssssssssssssssssssssssssssssssssssssss", res.data);
+    //   //console.log("assssssssssssssssssssssssssssssssssssssss", res.data);
     //   setMyProjects(res.data);
     // });
   };

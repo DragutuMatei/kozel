@@ -120,7 +120,7 @@ function CreateTask({ user }) {
   };
 
   useEffect(() => {
-    console.log(user, typeof user);
+    //console.log(user, typeof user);
     // if (typeof user == "object") {
     //   navigate("/");
     // }
@@ -186,8 +186,8 @@ function CreateTask({ user }) {
                 <h4 className="button">Like on Twitter</h4>
               </div>
               <br />
-              <div className="button but1" onClick={() => selectType("follow")}>
-                <h4 className="button">Follow on Twitter</h4>
+              <div className="button but1" onClick={() => selectType("tweet")}>
+                <h4 className="button">Tweet</h4>
               </div>
 
               <br />
@@ -201,7 +201,7 @@ function CreateTask({ user }) {
                 style={{ cursor: "not-allowed", opacity: 0.6 }}
               >
                 <h4 className="button" style={{ cursor: "not-allowed" }}>
-                  Retweet (to be added)
+                  Follow on Twitter (to be added)
                 </h4>
               </div>
               <br />
@@ -252,9 +252,9 @@ function CreateTask({ user }) {
                 <>
                   <p className="bold_p">The post id</p>
                 </>
-              ) : type === "follow" ? (
+              ) : type === "tweet" ? (
                 <>
-                  <p className="bold_p">Link to the account</p>
+                  <p className="bold_p">Write the tweet</p>
                 </>
               ) : (
                 <p className="bold_p">Link</p>
@@ -262,11 +262,7 @@ function CreateTask({ user }) {
 
               <input type="hidden" value={type} />
 
-              <input
-                type="text"
-                id="name"
-                onChange={handleLinkChange}
-              />
+              <input type="text" id="name" onChange={handleLinkChange} />
 
               {/* <p className="bold_p">Submission Type</p>
           <div className="tags">

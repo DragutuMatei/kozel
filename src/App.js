@@ -19,7 +19,7 @@ function App() {
   const [user, setUser] = useState("");
 
   // useEffect(() => {
-  //   console.log(user);
+  //   //console.log(user);
   // }, [user]);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ function App() {
       .get(auth + "/userInfo")
       .then((res) => {
         setUser(res.data);
-        console.log(typeof res.data);
+        //console.log(typeof res.data);
         if (res.data != "") localStorage.setItem("logged", "true");
         else localStorage.setItem("logged", "false");
       })
@@ -58,7 +58,7 @@ function App() {
         <Route
           path="/login"
           element={<Login setUser={setUser} user={user} />}
-        /> 
+        />
         <Route
           path="/create-task/:id/:user_id"
           element={<CreateTask user={user} />}

@@ -14,7 +14,6 @@ import { projects } from "../utils/Links";
 
 function Project({ user }) {
   const { id } = useParams();
-
   const [isProofSubmited, setSubmitedProof] = useState(false);
   const [display, setDisplay] = useState(false);
   const [proiect, setProiect] = useState(null);
@@ -26,15 +25,15 @@ function Project({ user }) {
     setTaskIndex(index);
     setTask(task);
     setOk(false);
-    console.log(task);
+    //console.log(task);
     setDisplay(true);
-    console.log(task.solves.length);
-    console.log(ok);
+    //console.log(task.solves.length);
+    //console.log(ok);
     for (let i = 0; i < task.solves.length; i++) {
       const element = task.solves[i];
       if (element.username == user.username) {
         setOk(element.accept);
-        console.log("=-============", element.accept);
+        //console.log("=-============", element.accept);
       }
     }
   };
@@ -76,7 +75,7 @@ function Project({ user }) {
           img: proof,
         })
         .then((res) => {
-          console.log(res.data);
+          //console.log(res.data);
           if (res.data) setMsg("Proof submited!");
           else setMsg("Proof not submited!");
         })
@@ -93,12 +92,37 @@ function Project({ user }) {
           }
         )
         .then((res) => {
-          console.log(res.data);
+          //console.log(res.data);
           if (res.data) setMsg("Validated!");
           else setMsg("Not validated!");
         })
         .catch((e) => {
           console.warn(e);
+        });
+    } else if (task.type == "tweet") {
+      handleTweetButtonClick(task.link);
+      await axios_config
+        .post(projects + `/${proiect.id}/${taskIndex}/addSimpleAutoSolve`, {
+          xusername: xUsername,
+          username: user.username,
+        })
+        .then(async (res) => {
+          console.log(res);
+          await axios_config
+            .post(
+              `${projects}/${proiect.id}/${taskIndex}/decideSolve/${user.username}`,
+              {
+                decide: true,
+              }
+            )
+            .then((res) => {
+              console.log(res);
+
+              // if (res.data != false) setSolves(res.data);
+            })
+            .catch((e) => {
+              console.warn(e);
+            });
         });
     }
   };
@@ -122,17 +146,17 @@ function Project({ user }) {
   // }, []);
 
   const getProject = async () => {
-    console.log("asdad");
+    //console.log("asdad");
     await axios_config.get(projects + `/getProject/${id}`).then(async (res) => {
       setProiect(res.data);
       if (res.data.user_id == user.id) {
         setIsAdmin(true);
         setIsPresent(true);
-        console.log("asddddddddddddddddddd");
+        //console.log("asddddddddddddddddddd");
       } else
         await axios_config.get(projects + `/${id}/getUsers`).then((res) => {
-          console.log("ooooooooooooooooooo");
-          console.log(res.data);
+          //console.log("ooooooooooooooooooo");
+          //console.log(res.data);
           if (res.data.length != 0) {
             if (res.data != false)
               res.data.forEach((users) => {
@@ -144,10 +168,18 @@ function Project({ user }) {
         });
     });
   };
+
   useEffect(() => {
     getProject();
-    console.log("---------------------------------------------------");
+    //console.log("---------------------------------------------------");
   }, [, id, window, user]);
+
+  const handleTweetButtonClick = (text) => {
+    const tweetIntentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      text
+    )}`;
+    window.open(tweetIntentUrl, "_blank");
+  };
 
   return (
     <>
@@ -263,6 +295,7 @@ function Project({ user }) {
                             onChange={handleUsernameChange}
                           />
                         )}
+
                         {!ok && (
                           <>
                             <button
@@ -388,7 +421,8 @@ function Project({ user }) {
           </header>
           <div className="line"></div>
           <div className="taske">
-            {isPresent || isAdmin ? (
+            {/* isPresent || isAdmin */}
+            {true ? (
               proiect &&
               proiect.tasks.map((task, index) => {
                 return (

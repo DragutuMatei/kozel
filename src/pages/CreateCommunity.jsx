@@ -41,18 +41,18 @@ function CreateCommunity({ user }) {
     setWebsite(e.target.value);
   }
 
-  function imageUploaded(file) { }
+  function imageUploaded(file) {}
   const [img, setImg] = useState("");
 
   const [logo, setLogo] = useState("");
   function handleLogoChange(e) {
     // setLogo(e.target.files[0]);
-    // console.log(e.target.files[0]);
+    // //console.log(e.target.files[0]);
     const file = e.target.files[0];
 
     let imageBase64Stringsep, base64String;
     let reader = new FileReader();
-    console.log("next");
+    //console.log("next");
 
     reader.onload = function () {
       base64String = reader.result;
@@ -92,12 +92,25 @@ function CreateCommunity({ user }) {
   const [msg, setMsg] = useState("");
 
   const createcom = async () => {
-    let requirements = [img, name, user.id, description, website, category, twitter, discord, telegram, wallet]
-    let ok = true
-    requirements.forEach(req => {
-      if (req == undefined || req == null || req == '')
-        {ok = false; setMsg("Complete all fields")}
-    })
+    let requirements = [
+      img,
+      name,
+      user.id,
+      description,
+      website,
+      category,
+      twitter,
+      discord,
+      telegram,
+      wallet,
+    ];
+    let ok = true;
+    requirements.forEach((req) => {
+      if (req == undefined || req == null || req == "") {
+        ok = false;
+        setMsg("Complete all fields");
+      }
+    });
     if (ok)
       await axios_config
         .post(projects + "/addProject", {
@@ -113,13 +126,13 @@ function CreateCommunity({ user }) {
           wallet,
         })
         .then((res) => {
-          console.log(res);
+          //console.log(res);
           setMsg("Community added succesfully!");
           navigate(-1);
         })
         .catch((err) => {
           setMsg("Complete all fields!");
-          console.log(err);
+          //console.log(err);
         });
   };
 

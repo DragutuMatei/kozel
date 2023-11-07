@@ -37,13 +37,13 @@ function Register({ user }) {
           password,
         })
         .then((res) => {
-          console.log(res);
+          //console.log(res);
           // setMsg(res.data.message);
-          navigate("/login")
+          navigate("/login");
         });
     } catch (error) {
       setMsg("Completeaza corect toate datele!");
-      console.log(error);
+      //console.log(error);
     }
   };
 
