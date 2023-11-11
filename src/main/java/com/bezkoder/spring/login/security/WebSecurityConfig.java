@@ -2,6 +2,8 @@ package com.bezkoder.spring.login.security;
 
 import com.bezkoder.spring.login.Metamask.Web3AuthenticationProvider;
 import com.sun.net.httpserver.HttpsServer;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -64,10 +66,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
+
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/api/auth/**", "/api/auth/challenge/{username}/{address}", "/api/auth/signin", "/api/auth/userInfo", "/api/auth/signup").permitAll()
-                .antMatchers("/api/test/**").permitAll();
+                .antMatchers("/api/**").permitAll()
+
+        ;
 //                .anyRequest().authenticated();
 
 
