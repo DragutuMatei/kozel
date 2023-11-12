@@ -32,10 +32,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @CrossOrigin(allowCredentials = "true",
 //        origins = "https://fastalaneapp.netlify.app/",
@@ -528,7 +525,7 @@ public class ProjectsController {
         // Instantiate library client
         TwitterApi apiInstance = new TwitterApi();
 
-        TwitterCredentialsBearer credentials = new TwitterCredentialsBearer(System.getenv("BEARER_TOKEN"));
+        TwitterCredentialsBearer credentials = new TwitterCredentialsBearer("AAAAAAAAAAAAAAAAAAAAAOqhqwEAAAAAG3x%2FSp7T4NrIlCm8RTo789uLNzw%3D3Z1e3Nfc3cnXjjUxiBY9fLGZ3Go2jPHuavfeXeU171IlLYFfEC");
 
         // Pass credentials to library client
         apiInstance.setTwitterCredentials(credentials);
@@ -555,37 +552,45 @@ public class ProjectsController {
             throw new RuntimeException(e);
         }
     }
-
-    @GetMapping("/oauth2/callback/twitter")
-    public ResponseEntity<String> getTwitter(
-            @RequestParam("oauth_verifier") String oauth_verifier,
-            @RequestParam("oauth_token") String oauth_token
-    ) {
-        try {
-            Date date = Calendar.getInstance().getTime();
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-            String strDate = dateFormat.format(date);
-            Unirest.setTimeouts(0, 0);
-            HttpResponse<String> response = Unirest.post("https://api.twitter.com/oauth/access_token")
-                    .header("Cookie", "guest_id=v1%3A169892399276147872")
-                    .field("oauth_token", oauth_token)
-                    .field("oauth_consumer_key", "qVeFo8ZPkQEBDk6nfuHqo2tva")
-                    .field("oauth_verifier", oauth_verifier)
-                    .asString();
-
-            String jsonData = response.getBody();
-            System.out.println(oauth_token + oauth_verifier);
-            System.out.println("================================================================================================================");
-            System.out.println(jsonData);
-            return new ResponseEntity<>(jsonData, HttpStatus.OK);
-        } catch (TypeMismatchException e) {
-            System.out.println("oooooooooooooooooooooooooooooooooooooooooooooooooooo");
-            return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (UnirestException e) {
-            System.out.println("111111111111111111111111111");
-            return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//
+//    @GetMapping("/oauth2/callback/twitter")
+//    public void getTwitter(
+//            @RequestParam("oauth_verifier") String oauth_verifier,
+//            @RequestParam("oauth_token") String oauth_token,
+//            HttpServletResponse responses
+//    ) {
+//        try {
+//            Date expdate = new Date();
+//            expdate.setTime(expdate.getTime() + (3600 * 1000));
+//            DateFormat df = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", java.util.Locale.US);
+//            df.setTimeZone(TimeZone.getTimeZone("GMT"));
+//            String cookieExpire = df.format(expdate);
+//
+//            Unirest.setTimeouts(0, 0);
+//            HttpResponse<String> response = Unirest.post("https://api.twitter.com/oauth/access_token")
+//                    .header("Cookie", "guest_id=v1%3A169892399276147872")
+//                    .field("oauth_token", oauth_token)
+//                    .field("oauth_consumer_key", "qVeFo8ZPkQEBDk6nfuHqo2tva")
+//                    .field("oauth_verifier", oauth_verifier)
+//                    .field("expires", cookieExpire)
+//                    .asString();
+//
+//            String jsonData = response.getBody();
+////            System.out.println(oauth_token + oauth_verifier);
+//            System.out.println("================================================================================================================");
+//            System.out.println(jsonData);
+//            responses.sendRedirect("http://localhost:3000&json1=");
+////            return new ResponseEntity<>(jsonData, HttpStatus.OK);
+//        } catch (TypeMismatchException e) {
+//            System.out.println("oooooooooooooooooooooooooooooooooooooooooooooooooooo");
+////            return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        } catch (UnirestException e) {
+//            System.out.println("111111111111111111111111111");
+////            return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 //
 //    @GetMapping("/oauth2/authorize/normal/twitter")
 //    public void twitterOauthLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -609,6 +614,45 @@ public class ProjectsController {
 //            e.printStackTrace(); // You may want to log the exception or handle it appropriately
 //        }
 //    }
+@GetMapping("/oauth2/callback/twitter")
+public void getTwitter(
+        @RequestParam("oauth_verifier") String oauth_verifier,
+        @RequestParam("oauth_token") String oauth_token,
+        HttpServletResponse responses
+) {
+    try {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, 34214400); // 34214400 seconds = 4 hours
+        Date expdate = calendar.getTime();
+
+        DateFormat df = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
+        df.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String cookieExpire = df.format(expdate);
+
+        Unirest.setTimeouts(0, 0);
+        HttpResponse<String> response = Unirest.post("https://api.twitter.com/oauth/access_token")
+                .header("Cookie", "guest_id=v1%3A169892399276147872")
+                .field("oauth_token", oauth_token)
+                .field("oauth_consumer_key", "qVeFo8ZPkQEBDk6nfuHqo2tva")
+                .field("oauth_verifier", oauth_verifier)
+                .field("expires", cookieExpire)
+                .asString();
+
+        String jsonData = response.getBody();
+        System.out.println("================================================================================================================");
+        System.out.println(jsonData);
+        responses.sendRedirect("http://localhost:3000&json1=");
+    } catch (TypeMismatchException e) {
+        System.out.println("oooooooooooooooooooooooooooooooooooooooooooooooooooo");
+    } catch (UnirestException e) {
+        System.out.println("111111111111111111111111111");
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+}
+
+
+
 
 
     @GetMapping("/oauth2/authorize/normal/twitter")
@@ -627,6 +671,7 @@ public class ProjectsController {
             OAuthToken requestToken = oauthOperations.fetchRequestToken(callbackUrl, additionalParameters);
 //            String authorizeUrl = oauthOperations.buildAuthorizeUrl(requestToken.getValue(), OAuth1Parameters.NONE);
 //            response.sendRedirect(authorizeUrl);
+
             return ResponseEntity.ok(oauthOperations.buildAuthorizeUrl(requestToken.getValue(), OAuth1Parameters.NONE));
         } catch (TypeMismatchException e) {
             // Handle TypeMismatchException here
