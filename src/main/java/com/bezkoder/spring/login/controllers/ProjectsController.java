@@ -1,6 +1,7 @@
 package com.bezkoder.spring.login.controllers;
 
 import com.bezkoder.spring.login.models.*;
+import com.bezkoder.spring.login.models.User;
 import com.bezkoder.spring.login.payload.request.*;
 import com.bezkoder.spring.login.repository.ProjectsRepository;
 import com.bezkoder.spring.login.repository.UserRepository;
@@ -9,7 +10,8 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.twitter.clientlib.TwitterCredentialsBearer;
 import com.twitter.clientlib.api.TwitterApi;
-import com.twitter.clientlib.model.UsersFollowingLookupResponse;
+import com.twitter.clientlib.model.*;
+import org.apache.catalina.valves.rewrite.RewriteCond;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.TypeMismatchException;
@@ -517,18 +519,67 @@ public class ProjectsController {
     }
 
 
+//    @GetMapping("/check-user-subscribed/{username}")
+//    public ResponseEntity<String> checkUserSubscribed(@PathVariable String username) {
+//        String accountIdToCheck = "1707052841896927232"; // Account ID to check if the user follows
+//
+//        try {
+//            // Step 1: Get Twitter user ID by username
+//            HttpResponse<String> userLookupResponse = Unirest.get(userLookupUrl + username)
+//                    .header("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAAOqhqwEAAAAAG3x%2FSp7T4NrIlCm8RTo789uLNzw%3D3Z1e3Nfc3cnXjjUxiBY9fLGZ3Go2jPHuavfeXeU171IlLYFfEC")
+//                    .asString();
+//
+//            if (userLookupResponse.getStatus() != 200) {
+//                System.out.println("Error response body: " + userLookupResponse.getBody());
+//                return new ResponseEntity<>("Error retrieving user information", HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+//
+//            String userLookupJson = userLookupResponse.getBody();
+//            JSONObject userLookupObject = new JSONObject(userLookupJson);
+//            String userId = userLookupObject.getJSONObject("data").getString("id");
+//
+//            // Step 2: Check if the user with userId follows the specified account
+////            HttpResponse<String> followCheckResponse = Unirest.get("https://api.twitter.com/2/users/" + userId + "/following/" + accountIdToCheck)
+////                    .header("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAAOqhqwEAAAAAG3x%2FSp7T4NrIlCm8RTo789uLNzw%3D3Z1e3Nfc3cnXjjUxiBY9fLGZ3Go2jPHuavfeXeU171IlLYFfEC")
+////                    .asString();
+//            HttpResponse<String> followCheckResponse = Unirest.get("https://api.twitter.com/2/users/" + accountIdToCheck + "/followers")
+//                    .header("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAAOqhqwEAAAAAG3x%2FSp7T4NrIlCm8RTo789uLNzw%3D3Z1e3Nfc3cnXjjUxiBY9fLGZ3Go2jPHuavfeXeU171IlLYFfEC")
+//                    .queryString("user.fields", "id") // Include this line to retrieve user IDs in the response
+//                    .asString();
+//
+//
+//
+//            if (followCheckResponse.getStatus() == 200) {
+//                System.out.println("User follows the account");
+//                return new ResponseEntity<>("true", HttpStatus.OK);
+//            } else if (followCheckResponse.getStatus() == 404) {
+//                System.out.println("User does not follow the account");
+//                return new ResponseEntity<>("false", HttpStatus.OK);
+//            } else {
+//                System.out.println("Error response body: " + followCheckResponse.getBody());
+//                return new ResponseEntity<>("Error checking user subscription", HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
     @GetMapping("/check-user-subscribed/{username}")
     public ResponseEntity<String> checkUserSubscribed(
             @PathVariable String username
-    ) throws UnirestException {
-        String id = "2244994945";
+    ) throws UnirestException, com.twitter.clientlib.ApiException {
+        String id = "1707052841896927232";
         // Instantiate library client
         TwitterApi apiInstance = new TwitterApi();
+        System.out.println(username);
 
         TwitterCredentialsBearer credentials = new TwitterCredentialsBearer("AAAAAAAAAAAAAAAAAAAAAOqhqwEAAAAAG3x%2FSp7T4NrIlCm8RTo789uLNzw%3D3Z1e3Nfc3cnXjjUxiBY9fLGZ3Go2jPHuavfeXeU171IlLYFfEC");
-
+        System.out.println(credentials.getBearerToken());
+        System.out.println(credentials.isBearerToken());
         // Pass credentials to library client
         apiInstance.setTwitterCredentials(credentials);
+
         HttpResponse<String> userLookupResponse = Unirest.get(userLookupUrl + username)
                 .header("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAAOqhqwEAAAAAG3x%2FSp7T4NrIlCm8RTo789uLNzw%3D3Z1e3Nfc3cnXjjUxiBY9fLGZ3Go2jPHuavfeXeU171IlLYFfEC")
                 .asString();
@@ -540,19 +591,25 @@ public class ProjectsController {
         String userLookupJson = userLookupResponse.getBody();
         JSONObject userLookupObject = new JSONObject(userLookupJson);
         String userId = userLookupObject.getJSONObject("data").getString("id");
+        System.out.println(userId);
         try {
-            UsersFollowingLookupResponse result = apiInstance.users().usersIdFollowing(userId, null, null);
-            System.out.println(result);
+//            UsersFollowingLookupResponse result2 = apiInstance.users().userIdF
+            SingleUserLookupResponse result = apiInstance.users().findUserById(userId, null, null, null);
+            System.out.println(result.getData());
             return new ResponseEntity<>("true", HttpStatus.OK);
         } catch (ApiException e) {
+            System.out.println("2222222222222222222222222222222222222222");
             System.err.println("Exception when calling UsersApi#usersIdFollowing");
             e.printStackTrace();
             return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (com.twitter.clientlib.ApiException e) {
+            System.out.println("0000000000000000000000000000000000");
             throw new RuntimeException(e);
         }
     }
-//
+
+
+    //
 //    @GetMapping("/oauth2/callback/twitter")
 //    public void getTwitter(
 //            @RequestParam("oauth_verifier") String oauth_verifier,
@@ -614,45 +671,36 @@ public class ProjectsController {
 //            e.printStackTrace(); // You may want to log the exception or handle it appropriately
 //        }
 //    }
-@GetMapping("/oauth2/callback/twitter")
-public void getTwitter(
-        @RequestParam("oauth_verifier") String oauth_verifier,
-        @RequestParam("oauth_token") String oauth_token,
-        HttpServletResponse responses
-) {
-    try {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, 34214400); // 34214400 seconds = 4 hours
-        Date expdate = calendar.getTime();
 
-        DateFormat df = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
-        df.setTimeZone(TimeZone.getTimeZone("GMT"));
-        String cookieExpire = df.format(expdate);
+    @GetMapping("/oauth2/callback/twitter")
+    public void getTwitter(
+            @RequestParam("oauth_verifier") String oauth_verifier,
+            @RequestParam("oauth_token") String oauth_token,
+            HttpServletResponse responses
+    ) {
+        try {
+            Unirest.setTimeouts(0, 0);
+            HttpResponse<String> response = Unirest.post("https://api.twitter.com/oauth/access_token")
+                    .header("Cookie", "guest_id=v1%3A169892399276147872")
+                    .field("oauth_token", oauth_token)
+                    .field("oauth_consumer_key", "qVeFo8ZPkQEBDk6nfuHqo2tva")
+                    .field("oauth_verifier", oauth_verifier)
+                    .asString();
 
-        Unirest.setTimeouts(0, 0);
-        HttpResponse<String> response = Unirest.post("https://api.twitter.com/oauth/access_token")
-                .header("Cookie", "guest_id=v1%3A169892399276147872")
-                .field("oauth_token", oauth_token)
-                .field("oauth_consumer_key", "qVeFo8ZPkQEBDk6nfuHqo2tva")
-                .field("oauth_verifier", oauth_verifier)
-                .field("expires", cookieExpire)
-                .asString();
-
-        String jsonData = response.getBody();
-        System.out.println("================================================================================================================");
-        System.out.println(jsonData);
-        responses.sendRedirect("http://localhost:3000&json1=");
-    } catch (TypeMismatchException e) {
-        System.out.println("oooooooooooooooooooooooooooooooooooooooooooooooooooo");
-    } catch (UnirestException e) {
-        System.out.println("111111111111111111111111111");
-    } catch (IOException e) {
-        throw new RuntimeException(e);
+            String jsonData = response.getBody();
+            System.out.println("================================================================================================================");
+            System.out.println(jsonData);
+            responses.sendRedirect("http://localhost:3000?" + jsonData);
+        } catch (TypeMismatchException e) {
+            System.out.println("oooooooooooooooooooooooooooooooooooooooooooooooooooo");
+        } catch (UnirestException e) {
+            System.out.println("111111111111111111111111111");
+        } catch (IOException e) {
+            System.out.println("sa doks oaskd oas doksa d o;asod soa doasod sdk a sd  saoo");
+            throw new RuntimeException(e);
+        }
+//        return ResponseEntity.ok("none");
     }
-}
-
-
-
 
 
     @GetMapping("/oauth2/authorize/normal/twitter")
