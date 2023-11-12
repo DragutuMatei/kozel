@@ -565,48 +565,48 @@ public class ProjectsController {
 //        }
 //    }
 
-    @GetMapping("/check-user-subscribed/{username}")
-    public ResponseEntity<String> checkUserSubscribed(
-            @PathVariable String username
-    ) throws UnirestException, com.twitter.clientlib.ApiException {
-        String id = "1707052841896927232";
-        // Instantiate library client
-        TwitterApi apiInstance = new TwitterApi();
-        System.out.println(username);
-
-        TwitterCredentialsBearer credentials = new TwitterCredentialsBearer("AAAAAAAAAAAAAAAAAAAAAOqhqwEAAAAAG3x%2FSp7T4NrIlCm8RTo789uLNzw%3D3Z1e3Nfc3cnXjjUxiBY9fLGZ3Go2jPHuavfeXeU171IlLYFfEC");
-        System.out.println(credentials.getBearerToken());
-        System.out.println(credentials.isBearerToken());
-        // Pass credentials to library client
-        apiInstance.setTwitterCredentials(credentials);
-
-        HttpResponse<String> userLookupResponse = Unirest.get(userLookupUrl + username)
-                .header("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAAOqhqwEAAAAAG3x%2FSp7T4NrIlCm8RTo789uLNzw%3D3Z1e3Nfc3cnXjjUxiBY9fLGZ3Go2jPHuavfeXeU171IlLYFfEC")
-                .asString();
-
-        if (userLookupResponse.getStatus() != 200) {
-            return new ResponseEntity<>("Error retrieving user information", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        String userLookupJson = userLookupResponse.getBody();
-        JSONObject userLookupObject = new JSONObject(userLookupJson);
-        String userId = userLookupObject.getJSONObject("data").getString("id");
-        System.out.println(userId);
-        try {
-//            UsersFollowingLookupResponse result2 = apiInstance.users().userIdF
-            SingleUserLookupResponse result = apiInstance.users().findUserById(userId, null, null, null);
-            System.out.println(result.getData());
-            return new ResponseEntity<>("true", HttpStatus.OK);
-        } catch (ApiException e) {
-            System.out.println("2222222222222222222222222222222222222222");
-            System.err.println("Exception when calling UsersApi#usersIdFollowing");
-            e.printStackTrace();
-            return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (com.twitter.clientlib.ApiException e) {
-            System.out.println("0000000000000000000000000000000000");
-            throw new RuntimeException(e);
-        }
-    }
+//    @GetMapping("/check-user-subscribed/{username}")
+//    public ResponseEntity<String> checkUserSubscribed(
+//            @PathVariable String username
+//    ) throws UnirestException, com.twitter.clientlib.ApiException {
+//        String id = "1707052841896927232";
+//        // Instantiate library client
+//        TwitterApi apiInstance = new TwitterApi();
+//        System.out.println(username);
+//
+//        TwitterCredentialsBearer credentials = new TwitterCredentialsBearer("AAAAAAAAAAAAAAAAAAAAAOqhqwEAAAAAG3x%2FSp7T4NrIlCm8RTo789uLNzw%3D3Z1e3Nfc3cnXjjUxiBY9fLGZ3Go2jPHuavfeXeU171IlLYFfEC");
+//        System.out.println(credentials.getBearerToken());
+//        System.out.println(credentials.isBearerToken());
+//        // Pass credentials to library client
+//        apiInstance.setTwitterCredentials(credentials);
+//
+//        HttpResponse<String> userLookupResponse = Unirest.get(userLookupUrl + username)
+//                .header("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAAOqhqwEAAAAAG3x%2FSp7T4NrIlCm8RTo789uLNzw%3D3Z1e3Nfc3cnXjjUxiBY9fLGZ3Go2jPHuavfeXeU171IlLYFfEC")
+//                .asString();
+//
+//        if (userLookupResponse.getStatus() != 200) {
+//            return new ResponseEntity<>("Error retrieving user information", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//
+//        String userLookupJson = userLookupResponse.getBody();
+//        JSONObject userLookupObject = new JSONObject(userLookupJson);
+//        String userId = userLookupObject.getJSONObject("data").getString("id");
+//        System.out.println(userId);
+//        try {
+////            UsersFollowingLookupResponse result2 = apiInstance.users().userIdF
+//            SingleUserLookupResponse result = apiInstance.users().findUserById(userId, null, null, null);
+//            System.out.println(result.getData());
+//            return new ResponseEntity<>("true", HttpStatus.OK);
+//        } catch (ApiException e) {
+//            System.out.println("2222222222222222222222222222222222222222");
+//            System.err.println("Exception when calling UsersApi#usersIdFollowing");
+//            e.printStackTrace();
+//            return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        } catch (com.twitter.clientlib.ApiException e) {
+//            System.out.println("0000000000000000000000000000000000");
+//            throw new RuntimeException(e);
+//        }
+//    }
 
 
     //
@@ -730,6 +730,51 @@ public class ProjectsController {
         }
     }
 
+
+    @GetMapping("/twitter-api-request/{accessToken}/{mainUserId}/{userToCheck}")
+    public ResponseEntity<String> makeTwitterApiRequest(
+            @PathVariable String accessToken,
+            @PathVariable String mainUserId,
+            @PathVariable String userToCheck
+    ) {
+        Unirest.setTimeouts(0, 0);
+        try {
+            // Step 1: Get the user's ID based on the username
+            HttpResponse<String> userLookupResponse = Unirest.get("https://api.twitter.com/2/users/by/username/" + userToCheck)
+                    .header("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAAOqhqwEAAAAAG3x%2FSp7T4NrIlCm8RTo789uLNzw%3D3Z1e3Nfc3cnXjjUxiBY9fLGZ3Go2jPHuavfeXeU171IlLYFfEC")
+                    .asString();
+
+            if (userLookupResponse.getStatus() != 200) {
+                return new ResponseEntity<>("Error retrieving user information", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            String userLookupJson = userLookupResponse.getBody();
+            JSONObject userLookupObject = new JSONObject(userLookupJson);
+            String userId = userLookupObject.getJSONObject("data").getString("id");
+
+            HttpResponse<String> response = Unirest.post("https://api.twitter.com/2/users/" + mainUserId + "/following")
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "OAuth oauth_consumer_key=\"qVeFo8ZPkQEBDk6nfuHqo2tva\",oauth_token=\"" + accessToken + "\",oauth_signature_method=\"HMAC-SHA1\",oauth_timestamp=\"1699633839\",oauth_nonce=\"VPCHxX80H2k\",oauth_version=\"1.0\",oauth_signature=\"LWlbh5c7g%2F1n451QLW3HJjgqBCE%3D\"")
+                    .header("Cookie", "guest_id=v1%3A169892399276147872")
+                    .body("{\r\n    \"target_user_id\": \"" + userId + "\"\r\n}")
+                    .asString();
+            String responseJson = response.getBody();
+            JSONObject responseObject = new JSONObject(responseJson);
+            System.out.println(responseObject);
+            JSONObject dataObject = responseObject.getJSONObject("data");
+
+            // Extract the "following" field from the "data" object
+            boolean isFollowing = dataObject.getBoolean("following");
+
+            if (isFollowing) {
+                return new ResponseEntity<>("true", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("false", HttpStatus.OK);
+            }
+        } catch (UnirestException e) {
+            return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }
 
