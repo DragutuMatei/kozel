@@ -523,7 +523,7 @@ public class ProjectsController {
     @GetMapping("/check-user-subscribed/{username}")
     public ResponseEntity<String> checkUserSubscribed(
             @PathVariable String username
-    ) {
+    ) throws UnirestException {
         String id = "2244994945";
         // Instantiate library client
         TwitterApi apiInstance = new TwitterApi();
@@ -532,8 +532,19 @@ public class ProjectsController {
 
         // Pass credentials to library client
         apiInstance.setTwitterCredentials(credentials);
+        HttpResponse<String> userLookupResponse = Unirest.get(userLookupUrl + username)
+                .header("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAAOqhqwEAAAAAG3x%2FSp7T4NrIlCm8RTo789uLNzw%3D3Z1e3Nfc3cnXjjUxiBY9fLGZ3Go2jPHuavfeXeU171IlLYFfEC")
+                .asString();
+
+        if (userLookupResponse.getStatus() != 200) {
+            return new ResponseEntity<>("Error retrieving user information", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        String userLookupJson = userLookupResponse.getBody();
+        JSONObject userLookupObject = new JSONObject(userLookupJson);
+        String userId = userLookupObject.getJSONObject("data").getString("id");
         try {
-            UsersFollowingLookupResponse result = apiInstance.users().usersIdFollowing(id, null, null);
+            UsersFollowingLookupResponse result = apiInstance.users().usersIdFollowing(userId, null, null);
             System.out.println(result);
             return new ResponseEntity<>("true", HttpStatus.OK);
         } catch (ApiException e) {
@@ -560,8 +571,8 @@ public class ProjectsController {
                     .field("oauth_token", oauth_token)
                     .field("oauth_consumer_key", "qVeFo8ZPkQEBDk6nfuHqo2tva")
                     .field("oauth_verifier", oauth_verifier)
-//                    .field("expires", strDate)
                     .asString();
+
             String jsonData = response.getBody();
             System.out.println(oauth_token + oauth_verifier);
             System.out.println("================================================================================================================");
@@ -575,9 +586,33 @@ public class ProjectsController {
             return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+//
+//    @GetMapping("/oauth2/authorize/normal/twitter")
+//    public void twitterOauthLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+//        try {
+//            TwitterConnectionFactory connectionFactory =
+//                    new TwitterConnectionFactory("qVeFo8ZPkQEBDk6nfuHqo2tva", "X5oTAUxTBOZeVu9fjL0ZR4tbwXup6MbcIjSZreOzWXDtAiOuID");
+//            OAuth1Operations oauthOperations = connectionFactory.getOAuthOperations();
+//
+//            // Specify your callback URL here
+//            String callbackUrl = "http://localhost:8080/api/projects/oauth2/callback/twitter"; // Replace with your actual callback URL
+//
+//            MultiValueMap<String, String> additionalParameters = new LinkedMultiValueMap<>();
+//            additionalParameters.add("oauth_callback", callbackUrl);
+//
+//            OAuthToken requestToken = oauthOperations.fetchRequestToken(callbackUrl, additionalParameters);
+//            String authorizeUrl = oauthOperations.buildAuthorizeUrl(requestToken.getValue(), OAuth1Parameters.NONE);
+//            response.sendRedirect(authorizeUrl);
+//        } catch (TypeMismatchException e) {
+//            // Handle TypeMismatchException here
+//            System.out.println("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
+//            e.printStackTrace(); // You may want to log the exception or handle it appropriately
+//        }
+//    }
+
 
     @GetMapping("/oauth2/authorize/normal/twitter")
-    public void twitterOauthLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public ResponseEntity<?> twitterOauthLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             TwitterConnectionFactory connectionFactory =
                     new TwitterConnectionFactory("qVeFo8ZPkQEBDk6nfuHqo2tva", "X5oTAUxTBOZeVu9fjL0ZR4tbwXup6MbcIjSZreOzWXDtAiOuID");
@@ -590,12 +625,15 @@ public class ProjectsController {
             additionalParameters.add("oauth_callback", callbackUrl);
 
             OAuthToken requestToken = oauthOperations.fetchRequestToken(callbackUrl, additionalParameters);
-            String authorizeUrl = oauthOperations.buildAuthorizeUrl(requestToken.getValue(), OAuth1Parameters.NONE);
-            response.sendRedirect(authorizeUrl);
+//            String authorizeUrl = oauthOperations.buildAuthorizeUrl(requestToken.getValue(), OAuth1Parameters.NONE);
+//            response.sendRedirect(authorizeUrl);
+            return ResponseEntity.ok(oauthOperations.buildAuthorizeUrl(requestToken.getValue(), OAuth1Parameters.NONE));
         } catch (TypeMismatchException e) {
             // Handle TypeMismatchException here
             System.out.println("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
             e.printStackTrace(); // You may want to log the exception or handle it appropriately
+
+            return ResponseEntity.ok("no");
         }
     }
 
