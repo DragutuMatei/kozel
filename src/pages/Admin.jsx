@@ -110,6 +110,20 @@ function Admin({ user }) {
       });
   };
 
+  const decideAutoTask = async (decisionBoolean, username) => {
+    await axios_config
+      .post(`${projects}/${proiect.id}/${taskIndex}/decideSolve/${username}`, {
+        decide: decisionBoolean,
+      })
+      .then((res) => {
+        console.log("res", res);
+        if (res.data != false) setSolves(res.data);
+      })
+      .catch((e) => {
+        console.warn(e);
+      });
+  };
+
   return (
     <>
       <Side user={user} />
@@ -183,6 +197,44 @@ function Admin({ user }) {
                                 }}
                                 onClick={() => {
                                   decideTask(false, solve.username);
+                                }}
+                              >
+                                <h4 className="button">Reject</h4>
+                              </div>
+                            </div>
+                          </>
+                        ) : taskType == "tweet" ? (
+                          <>
+                            <br></br>
+
+                            <a
+                              href={`https://twitter.com/${solve.xusername}`}
+                              target="_blank"
+                            >
+                              Link to this profile
+                            </a>
+                            <br></br>
+                            <div className="aprprove-denial">
+                              <div
+                                className="button but2"
+                                onClick={() => {
+                                  decideAutoTask(true, solve.username);
+                                }}
+                                style={{
+                                  background:
+                                    solve.status && "rgba(42, 255, 178, 0.4)",
+                                }}
+                              >
+                                <h4 className="button">Approve</h4>
+                              </div>
+                              <div
+                                className="button but1"
+                                style={{
+                                  background:
+                                    !solve.status && "rgba(113, 32, 216, 0.4)",
+                                }}
+                                onClick={() => {
+                                  decideAutoTask(false, solve.username);
                                 }}
                               >
                                 <h4 className="button">Reject</h4>

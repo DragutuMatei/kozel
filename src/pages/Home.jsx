@@ -6,7 +6,7 @@ import { BsDiscord, BsStars } from "react-icons/bs";
 import { AiOutlineUser, AiOutlineLink } from "react-icons/ai";
 import json from "../utils/Projects.json";
 
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Side from "../components/Side";
 import axios_config from "../utils/AxiosConfig";
 import { projects } from "../utils/Links";
@@ -97,6 +97,21 @@ function Home({ logout, user }) {
       setMyProjects((old) => old.filter((pr) => pr.id != id));
     });
   };
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (
+      searchParams.get("oauth_token") &&
+      searchParams.get("oauth_token_secret")
+    ) {
+      localStorage.setItem("oauth_token", searchParams.get("oauth_token"));
+      localStorage.setItem(
+        "oauth_token_secret",
+        searchParams.get("oauth_token_secret")
+      );
+    }
+  }, []);
 
   return (
     <>

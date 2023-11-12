@@ -106,23 +106,9 @@ function Project({ user }) {
           xusername: xUsername,
           username: user.username,
         })
-        .then(async (res) => {
+        .then((res) => {
           console.log(res);
-          await axios_config
-            .post(
-              `${projects}/${proiect.id}/${taskIndex}/decideSolve/${user.username}`,
-              {
-                decide: true,
-              }
-            )
-            .then((res) => {
-              console.log(res);
-
-              // if (res.data != false) setSolves(res.data);
-            })
-            .catch((e) => {
-              console.warn(e);
-            });
+          setMsg("To be verified!");
         });
     }
   };

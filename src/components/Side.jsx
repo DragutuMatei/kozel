@@ -5,6 +5,7 @@ import { BsPlusLg } from "react-icons/bs";
 import { TbWorld } from "react-icons/tb";
 import axios_config from "../utils/AxiosConfig";
 import { projects } from "../utils/Links";
+import axios from "axios";
 
 function Side({ user }) {
   const [myProjects, setMyProjects] = useState([]);
@@ -38,12 +39,31 @@ function Side({ user }) {
         <TbWorld />
       </Link>
       <div className="linie"></div>
-      {myProjects &&
+      {/* {myProjects &&
         myProjects.map((my) => (
           <Link to={`/proiect/${my.id}`} className="link">
             <img src={my.img} alt="" />
           </Link>
-        ))}
+        ))} */}
+      <button
+        onClick={async () => {
+          await axios_config
+            .get("/projects/oauth2/authorize/normal/twitter")
+            .then(async(res) => {
+              console.log(res);
+              // await axios.get(res.data).then(res => {
+              //   console.log(res);
+              // })
+              window.open(res.data, "_blank");
+            });
+
+          // await axios_config.get("/projects/check-user-subscribed/Matei17078538").then(res => {
+          //   console.log(res);
+          // })
+        }}
+      >
+        click
+      </button>
     </nav>
   );
 }
