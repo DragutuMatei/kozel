@@ -11,7 +11,14 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.twitter.clientlib.TwitterCredentialsBearer;
 import com.twitter.clientlib.api.TwitterApi;
 import com.twitter.clientlib.model.*;
+import oauth.signpost.OAuthConsumer;
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import org.apache.catalina.valves.rewrite.RewriteCond;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.TypeMismatchException;
@@ -121,15 +128,6 @@ public class ProjectsController {
             System.out.println(solves.size());
             for (Object sol : solves) {
                 if (sol instanceof AutoSolve) {
-                    System.out.println("---------------------------------------------------------p");
-                    System.out.println(((AutoSolve) sol).getUsername());
-                    System.out.println(((AutoSolve) sol).getXusername());
-
-                    System.out.println(autoSolveRequest.getUsername());
-                    System.out.println(autoSolveRequest.getXusername());
-
-                    System.out.println(autoSolveRequest.getXusername().equals(((AutoSolve) sol).getXusername()) && autoSolveRequest.getUsername().equals(((AutoSolve) sol).getUsername()));
-
                     if (((AutoSolve) sol).getUsername().equals(autoSolveRequest.getUsername()) && ((AutoSolve) sol).getXusername().equals(autoSolveRequest.getXusername())) {
                         System.out.println("((AutoSolve) sol).getUsername()");
                         System.out.println(((AutoSolve) sol).getUsername());
@@ -144,6 +142,7 @@ public class ProjectsController {
                 System.out.println("=======================================");
                 System.out.println(autoSolveRequest.getXusername());
                 System.out.println(tweetId);
+
                 try {
                     // Set timeouts for Unirest (if needed)
                     Unirest.setTimeouts(0, 0);
@@ -196,7 +195,6 @@ public class ProjectsController {
 
                     }
                 } catch (Exception e) {
-
                     solves.add(solve);
                     project.get().getTasks().get(index_task).setSolves(solves);
                     projectsRepository.save(project.get());
@@ -731,11 +729,162 @@ public class ProjectsController {
     }
 
 
-    @GetMapping("/twitter-api-request/{accessToken}/{mainUserId}/{userToCheck}")
+//    @GetMapping("/twitter-api-request/{accessToken}/{mainUserId}/{userToCheck}")
+//    public ResponseEntity<String> makeTwitterApiRequest(
+//            @PathVariable String accessToken,
+//            @PathVariable String mainUserId,
+//            @PathVariable String userToCheck
+//    ) {
+//        Unirest.setTimeouts(0, 0);
+//        try {
+//            // Step 1: Get the user's ID based on the username
+//            HttpResponse<String> userLookupResponse = Unirest.get("https://api.twitter.com/2/users/by/username/" + userToCheck)
+//                    .header("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAAOqhqwEAAAAAG3x%2FSp7T4NrIlCm8RTo789uLNzw%3D3Z1e3Nfc3cnXjjUxiBY9fLGZ3Go2jPHuavfeXeU171IlLYFfEC")
+//                    .asString();
+//
+//            if (userLookupResponse.getStatus() != 200) {
+//                return new ResponseEntity<>("Error retrieving user information", HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+//
+//            String userLookupJson = userLookupResponse.getBody();
+//            JSONObject userLookupObject = new JSONObject(userLookupJson);
+//            String userId = userLookupObject.getJSONObject("data").getString("id");
+//
+//            HttpResponse<String> response = Unirest.post("https://api.twitter.com/2/users/" + mainUserId + "/following")
+//                    .header("Content-Type", "application/json")
+//                    .header("Authorization", "OAuth oauth_consumer_key=\"qVeFo8ZPkQEBDk6nfuHqo2tva\",oauth_token=\"" + accessToken + "\",oauth_signature_method=\"HMAC-SHA1\",oauth_timestamp=\"1699894506\",oauth_nonce=\"15qODNoU2oI\",oauth_version=\"1.0\",oauth_signature=\"pi%2F2yczDZ5jt6WkUfBCKUqHCQlc%3D\"")
+//                    .header("Cookie", "guest_id=v1%3A169892399276147872")
+//                    .body("{\r\n    \"target_user_id\": \"" + userId + "\"\r\n}")
+//                    .asString();
+//            String responseJson = response.getBody();
+//            JSONObject responseObject = new JSONObject(responseJson);
+//            System.out.println(responseObject);
+//            JSONObject dataObject = responseObject.getJSONObject("data");
+//
+//            // Extract the "following" field from the "data" object
+//            boolean isFollowing = dataObject.getBoolean("following");
+//
+//            if (isFollowing) {
+//                return new ResponseEntity<>("true", HttpStatus.OK);
+//            } else {
+//                return new ResponseEntity<>("false", HttpStatus.OK);
+//            }
+//        } catch (UnirestException e) {
+//            return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
+    @GetMapping("/check-user-subscribed/{accessToken}/{accessSecret}/{username}/{userToCheck}/{project_id}/{index_task}")
     public ResponseEntity<String> makeTwitterApiRequest(
             @PathVariable String accessToken,
-            @PathVariable String mainUserId,
+            @PathVariable String accessSecret,
+            @PathVariable String username,
+            @PathVariable String project_id,
+            @PathVariable int index_task,
             @PathVariable String userToCheck
+    ) throws IOException {
+        Optional<Projects> project = projectsRepository.findById(project_id);
+        if (project.isPresent()) {
+            List<Object> solves = project.get().getTasks().get(index_task).getSolves();
+            AutoSolve autoSolve = new AutoSolve(username, userToCheck);
+            boolean help_pls = false;
+            if (solves.isEmpty()) help_pls = true;
+            for (Object sol : solves) {
+                if (sol instanceof AutoSolve) {
+                    if (((AutoSolve) sol).getUsername().equals(username) && ((AutoSolve) sol).getXusername().equals(userToCheck)) {
+                        System.out.println("((AutoSolve) sol).getUsername()");
+                        System.out.println(((AutoSolve) sol).getUsername());
+                        help_pls = true;
+                        break;
+                    }
+                }
+            }
+            if (!help_pls) {
+
+                String consumerKey = "qVeFo8ZPkQEBDk6nfuHqo2tva";
+                String consumerSecret = "X5oTAUxTBOZeVu9fjL0ZR4tbwXup6MbcIjSZreOzWXDtAiOuID";
+
+                userToCheck = this.makeTwitterApiRequest(userToCheck);
+                System.out.println("usertocheck: " + userToCheck);
+                String fastlane_id = this.makeTwitterApiRequest("fstlaneapp");
+                System.out.println("fastlane: " + fastlane_id);
+
+                OAuthConsumer consumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
+                consumer.setTokenWithSecret(accessToken, accessSecret);
+
+                // You need to set the timestamp and nonce here
+                String timestamp = String.valueOf(System.currentTimeMillis() / 1000L);
+                String nonce = UUID.randomUUID().toString();
+
+                // Create the OAuth parameters
+                String oAuthParameters = "oauth_signature_method=HMAC-SHA1," +
+                        "oauth_timestamp=" + timestamp + "," +
+                        "oauth_nonce=" + nonce + "," +
+                        "oauth_version=1.0";
+
+                HttpPost request = new HttpPost("https://api.twitter.com/2/users/" + userToCheck + "/following");
+                request.setHeader("Content-Type", "application/json");
+                request.setHeader("Cookie", "guest_id=v1%3A169892399276147872");
+
+                // Set OAuth parameters in the Authorization header
+                request.setHeader("Authorization", "OAuth " + oAuthParameters);
+
+                // Set the JSON body
+                StringEntity body = new StringEntity("{\"target_user_id\": \"" + fastlane_id + "\"}");
+                request.setEntity(body);
+
+                // Sign the request
+                try {
+                    consumer.sign(request);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return new ResponseEntity<>("Error signing the request", HttpStatus.OK);
+                }
+
+                // Send the request
+                HttpClient httpClient = new DefaultHttpClient();
+                org.apache.http.HttpResponse response = httpClient.execute(request);
+
+                // Handle the response
+                int statusCode = response.getStatusLine().getStatusCode();
+                System.out.println("Response Code: " + statusCode);
+
+                // Print the response body
+                String responseBody = EntityUtils.toString(response.getEntity());
+                System.out.println("Response Body: " + responseBody);
+
+                JSONObject responseObject = new JSONObject(responseBody);
+                System.out.println("bag pula daca nu merge" + responseObject);
+
+
+                if (responseObject.has("data")) {
+                    JSONObject dataObject = responseObject.getJSONObject("data");
+
+                    // Extract the "following" field from the "data" object
+                    boolean isFollowing = dataObject.getBoolean("following");
+                    System.out.println(dataObject);
+                    if (isFollowing) {
+                        autoSolve.setStatus(true);
+                        solves.add(autoSolve);
+                        project.get().getTasks().get(index_task).setSolves(solves);
+                        projectsRepository.save(project.get());
+
+                        return new ResponseEntity<>("true", HttpStatus.OK);
+                    } else {
+                        solves.add(autoSolve);
+                        project.get().getTasks().get(index_task).setSolves(solves);
+                        projectsRepository.save(project.get());
+                        return new ResponseEntity<>("false", HttpStatus.OK);
+                    }
+                } else return ResponseEntity.ok("false");
+            }
+        }
+        return ResponseEntity.ok("false");
+    }
+
+
+    public String makeTwitterApiRequest(
+            String userToCheck
     ) {
         Unirest.setTimeouts(0, 0);
         try {
@@ -745,37 +894,17 @@ public class ProjectsController {
                     .asString();
 
             if (userLookupResponse.getStatus() != 200) {
-                return new ResponseEntity<>("Error retrieving user information", HttpStatus.INTERNAL_SERVER_ERROR);
+                return "";
             }
 
             String userLookupJson = userLookupResponse.getBody();
             JSONObject userLookupObject = new JSONObject(userLookupJson);
             String userId = userLookupObject.getJSONObject("data").getString("id");
-
-            HttpResponse<String> response = Unirest.post("https://api.twitter.com/2/users/" + mainUserId + "/following")
-                    .header("Content-Type", "application/json")
-                    .header("Authorization", "OAuth oauth_consumer_key=\"qVeFo8ZPkQEBDk6nfuHqo2tva\",oauth_token=\"" + accessToken + "\",oauth_signature_method=\"HMAC-SHA1\",oauth_timestamp=\"1699633839\",oauth_nonce=\"VPCHxX80H2k\",oauth_version=\"1.0\",oauth_signature=\"LWlbh5c7g%2F1n451QLW3HJjgqBCE%3D\"")
-                    .header("Cookie", "guest_id=v1%3A169892399276147872")
-                    .body("{\r\n    \"target_user_id\": \"" + userId + "\"\r\n}")
-                    .asString();
-            String responseJson = response.getBody();
-            JSONObject responseObject = new JSONObject(responseJson);
-            System.out.println(responseObject);
-            JSONObject dataObject = responseObject.getJSONObject("data");
-
-            // Extract the "following" field from the "data" object
-            boolean isFollowing = dataObject.getBoolean("following");
-
-            if (isFollowing) {
-                return new ResponseEntity<>("true", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("false", HttpStatus.OK);
-            }
+            return userId;
         } catch (UnirestException e) {
-            return new ResponseEntity<>("An error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return "";
         }
     }
-
 }
 
 
