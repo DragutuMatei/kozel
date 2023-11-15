@@ -110,6 +110,20 @@ function Project({ user }) {
           console.log(res);
           setMsg("To be verified!");
         });
+    } else if (task.type = "follow") {
+      await axios_config
+      .get(
+        `/projects/check-user-subscribed/${localStorage.getItem(
+          "oauth_token"
+        )}/${localStorage.getItem(
+          "oauth_token_secret"
+        )}/${xUsername}/${user.username}/${proiect.id}/${taskIndex}`
+      )
+      .then((res) => {
+        console.log(res);
+        if (res.data.following) setMsg("Validated!");
+        else setMsg("Not validated!");
+     });
     }
   };
 

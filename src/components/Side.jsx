@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { LuSearch } from "react-icons/lu";
 import { BsPlusLg } from "react-icons/bs";
 import { TbWorld } from "react-icons/tb";
@@ -16,6 +16,21 @@ function Side({ user }) {
     //   setMyProjects(res.data);
     // });
   };
+  
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (
+      searchParams.get("oauth_token") &&
+      searchParams.get("oauth_token_secret")
+    ) {
+      localStorage.setItem("oauth_token", searchParams.get("oauth_token"));
+      localStorage.setItem(
+        "oauth_token_secret",
+        searchParams.get("oauth_token_secret")
+      );
+    }
+  }, []);
 
   const [log, setLog] = useState(false);
 
@@ -39,12 +54,6 @@ function Side({ user }) {
         <TbWorld />
       </Link>
       <div className="linie"></div>
-      {/* {myProjects &&
-        myProjects.map((my) => (
-          <Link to={`/proiect/${my.id}`} className="link">
-            <img src={my.img} alt="" />
-          </Link>
-        ))} */}
       <button
         onClick={async () => {
           await axios_config

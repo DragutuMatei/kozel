@@ -98,20 +98,7 @@ function Home({ logout, user }) {
     });
   };
 
-  const [searchParams, setSearchParams] = useSearchParams();
 
-  useEffect(() => {
-    if (
-      searchParams.get("oauth_token") &&
-      searchParams.get("oauth_token_secret")
-    ) {
-      localStorage.setItem("oauth_token", searchParams.get("oauth_token"));
-      localStorage.setItem(
-        "oauth_token_secret",
-        searchParams.get("oauth_token_secret")
-      );
-    }
-  }, []);
 
   return (
     <>
