@@ -48,18 +48,28 @@ function Side({ user }) {
       <button
         onClick={async () => {
           await axios_config
-            .get("/projects/oauth2/authorize/normal/twitter")
-            .then(async(res) => {
+            .get(
+              `/projects/check-user-subscribed/${localStorage.getItem(
+                "oauth_token"
+              )}/${localStorage.getItem(
+                "oauth_token_secret"
+              )}/Matei17078538/{username}/{project_id}/{index_task}`
+            )
+            .then((res) => {
               console.log(res);
-              // await axios.get(res.data).then(res => {
-              //   console.log(res);
-              // })
+            });
+        }}
+      >
+        click
+      </button>
+      <button
+        onClick={async () => {
+          await axios_config
+            .get("/projects/oauth2/authorize/normal/twitter")
+            .then(async (res) => {
+              console.log(res);
               window.open(res.data, "_blank");
             });
-
-          // await axios_config.get("/projects/check-user-subscribed/Matei17078538").then(res => {
-          //   console.log(res);
-          // })
         }}
       >
         click
