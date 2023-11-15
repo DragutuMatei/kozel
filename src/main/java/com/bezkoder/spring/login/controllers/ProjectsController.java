@@ -670,6 +670,8 @@ public class ProjectsController {
 //        }
 //    }
 
+    private String url_front;
+
     @GetMapping("/oauth2/callback/twitter")
     public void getTwitter(
             @RequestParam("oauth_verifier") String oauth_verifier,
@@ -688,7 +690,7 @@ public class ProjectsController {
             String jsonData = response.getBody();
             System.out.println("================================================================================================================");
             System.out.println(jsonData);
-            responses.sendRedirect("http://localhost:3000?" + jsonData);
+            responses.sendRedirect("http://localhost:3000/" + url_front + "?" + jsonData);
         } catch (TypeMismatchException e) {
             System.out.println("oooooooooooooooooooooooooooooooooooooooooooooooooooo");
         } catch (UnirestException e) {
@@ -701,8 +703,9 @@ public class ProjectsController {
     }
 
 
-    @GetMapping("/oauth2/authorize/normal/twitter")
-    public ResponseEntity<?> twitterOauthLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @GetMapping("/oauth2/authorize/normal/twitter/{url1}/{url2}")
+    public ResponseEntity<?> twitterOauthLogin(@PathVariable String url1,@PathVariable String url2, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        url_front = url1 + "/" + url2;
         try {
             TwitterConnectionFactory connectionFactory =
                     new TwitterConnectionFactory("qVeFo8ZPkQEBDk6nfuHqo2tva", "X5oTAUxTBOZeVu9fjL0ZR4tbwXup6MbcIjSZreOzWXDtAiOuID");
