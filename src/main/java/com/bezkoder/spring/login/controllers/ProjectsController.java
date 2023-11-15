@@ -774,7 +774,7 @@ public class ProjectsController {
 //        }
 //    }
 
-    @GetMapping("/check-user-subscribed/{accessToken}/{accessSecret}/{username}/{userToCheck}/{project_id}/{index_task}")
+    @GetMapping("/check-user-subscribed/{accessToken}/{accessSecret}/{userToCheck}/{username}/{project_id}/{index_task}")
     public ResponseEntity<String> makeTwitterApiRequest(
             @PathVariable String accessToken,
             @PathVariable String accessSecret,
