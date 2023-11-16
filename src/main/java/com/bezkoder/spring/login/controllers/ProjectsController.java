@@ -704,7 +704,7 @@ public class ProjectsController {
 
 
     @GetMapping("/oauth2/authorize/normal/twitter/{url1}/{url2}")
-    public ResponseEntity<?> twitterOauthLogin(@PathVariable String url1,@PathVariable String url2, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public ResponseEntity<?> twitterOauthLogin(@PathVariable String url1, @PathVariable String url2, HttpServletRequest request, HttpServletResponse response) throws IOException {
         url_front = url1 + "/" + url2;
         try {
             TwitterConnectionFactory connectionFactory =
@@ -791,95 +791,107 @@ public class ProjectsController {
             List<Object> solves = project.get().getTasks().get(index_task).getSolves();
             AutoSolve autoSolve = new AutoSolve(username, userToCheck);
             boolean help_pls = false;
-            if (solves.isEmpty()) help_pls = true;
-            for (Object sol : solves) {
-                if (sol instanceof AutoSolve) {
-                    if (((AutoSolve) sol).getUsername().equals(username) && ((AutoSolve) sol).getXusername().equals(userToCheck)) {
-                        System.out.println("((AutoSolve) sol).getUsername()");
-                        System.out.println(((AutoSolve) sol).getUsername());
-                        help_pls = true;
-                        break;
-                    }
+            int index_solve = 0;
+//            if (solves.isEmpty()) help_pls = true;
+            System.out.println("size: " + solves.size());
+            for (int i = 0; i < solves.size(); i++) {
+                AutoSolve sol = (AutoSolve) solves.get(i);
+                System.out.println(i);
+                if (sol.getUsername().equals(username) && sol.getXusername().equals(userToCheck)) {
+                    System.out.println("((AutoSolve) sol).getUsername()");
+                    System.out.println(sol.getUsername());
+                    help_pls = true;
+                    index_solve = i;
+                    break;
                 }
             }
-            if (!help_pls) {
 
-                String consumerKey = "qVeFo8ZPkQEBDk6nfuHqo2tva";
-                String consumerSecret = "X5oTAUxTBOZeVu9fjL0ZR4tbwXup6MbcIjSZreOzWXDtAiOuID";
+            System.out.println(help_pls);
 
-                userToCheck = this.makeTwitterApiRequest(userToCheck);
-                System.out.println("usertocheck: " + userToCheck);
-                String fastlane_id = this.makeTwitterApiRequest("fstlaneapp");
-                System.out.println("fastlane: " + fastlane_id);
+//            if (!help_pls) {
+            String consumerKey = "qVeFo8ZPkQEBDk6nfuHqo2tva";
+            String consumerSecret = "X5oTAUxTBOZeVu9fjL0ZR4tbwXup6MbcIjSZreOzWXDtAiOuID";
 
-                OAuthConsumer consumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
-                consumer.setTokenWithSecret(accessToken, accessSecret);
+            userToCheck = this.makeTwitterApiRequest(userToCheck);
+            String fastlane_id = this.makeTwitterApiRequest("fstlaneapp");
 
-                // You need to set the timestamp and nonce here
-                String timestamp = String.valueOf(System.currentTimeMillis() / 1000L);
-                String nonce = UUID.randomUUID().toString();
+            OAuthConsumer consumer = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
+            consumer.setTokenWithSecret(accessToken, accessSecret);
 
-                // Create the OAuth parameters
-                String oAuthParameters = "oauth_signature_method=HMAC-SHA1," +
-                        "oauth_timestamp=" + timestamp + "," +
-                        "oauth_nonce=" + nonce + "," +
-                        "oauth_version=1.0";
+            // You need to set the timestamp and nonce here
+            String timestamp = String.valueOf(System.currentTimeMillis() / 1000L);
+            String nonce = UUID.randomUUID().toString();
 
-                HttpPost request = new HttpPost("https://api.twitter.com/2/users/" + userToCheck + "/following");
-                request.setHeader("Content-Type", "application/json");
-                request.setHeader("Cookie", "guest_id=v1%3A169892399276147872");
+            // Create the OAuth parameters
+            String oAuthParameters = "oauth_signature_method=HMAC-SHA1," +
+                    "oauth_timestamp=" + timestamp + "," +
+                    "oauth_nonce=" + nonce + "," +
+                    "oauth_version=1.0";
 
-                // Set OAuth parameters in the Authorization header
-                request.setHeader("Authorization", "OAuth " + oAuthParameters);
+            HttpPost request = new HttpPost("https://api.twitter.com/2/users/" + userToCheck + "/following");
+            request.setHeader("Content-Type", "application/json");
+            request.setHeader("Cookie", "guest_id=v1%3A169892399276147872");
 
-                // Set the JSON body
-                StringEntity body = new StringEntity("{\"target_user_id\": \"" + fastlane_id + "\"}");
-                request.setEntity(body);
+            // Set OAuth parameters in the Authorization header
+            request.setHeader("Authorization", "OAuth " + oAuthParameters);
 
-                // Sign the request
-                try {
-                    consumer.sign(request);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return new ResponseEntity<>("Error signing the request", HttpStatus.OK);
-                }
+            // Set the JSON body
+            StringEntity body = new StringEntity("{\"target_user_id\": \"" + fastlane_id + "\"}");
+            request.setEntity(body);
 
-                // Send the request
-                HttpClient httpClient = new DefaultHttpClient();
-                org.apache.http.HttpResponse response = httpClient.execute(request);
+            // Sign the request
+            try {
+                consumer.sign(request);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ResponseEntity<>("Error signing the request", HttpStatus.OK);
+            }
 
-                // Handle the response
-                int statusCode = response.getStatusLine().getStatusCode();
-                System.out.println("Response Code: " + statusCode);
+            // Send the request
+            HttpClient httpClient = new DefaultHttpClient();
+            org.apache.http.HttpResponse response = httpClient.execute(request);
 
-                // Print the response body
-                String responseBody = EntityUtils.toString(response.getEntity());
-                System.out.println("Response Body: " + responseBody);
+            // Handle the response
+            int statusCode = response.getStatusLine().getStatusCode();
 
-                JSONObject responseObject = new JSONObject(responseBody);
-                System.out.println("bag pula daca nu merge" + responseObject);
+            String responseBody = EntityUtils.toString(response.getEntity());
 
+            JSONObject responseObject = new JSONObject(responseBody);
+            System.out.println(responseObject);
 
-                if (responseObject.has("data")) {
-                    JSONObject dataObject = responseObject.getJSONObject("data");
+            if (responseObject.has("data")) {
+                JSONObject dataObject = responseObject.getJSONObject("data");
 
-                    // Extract the "following" field from the "data" object
-                    boolean isFollowing = dataObject.getBoolean("following");
-                    System.out.println(dataObject);
-                    if (isFollowing) {
-                        autoSolve.setStatus(true);
-                        solves.add(autoSolve);
-                        project.get().getTasks().get(index_task).setSolves(solves);
-                        projectsRepository.save(project.get());
+                // Extract the "following" field from the "data" object
+                boolean isFollowing = dataObject.getBoolean("following");
 
-                        return new ResponseEntity<>("true", HttpStatus.OK);
-                    } else {
-                        solves.add(autoSolve);
-                        project.get().getTasks().get(index_task).setSolves(solves);
-                        projectsRepository.save(project.get());
-                        return new ResponseEntity<>("false", HttpStatus.OK);
+                if (isFollowing) {
+                    System.out.println("e la follow");
+                    if (help_pls) {
+                        System.out.println("exista deja");
+                        project.get().getTasks().get(index_task).getSolves().remove(index_solve);
                     }
-                } else return ResponseEntity.ok("false");
+                    autoSolve.setStatus(true);
+                    solves.add(autoSolve);
+                    project.get().getTasks().get(index_task).setSolves(solves);
+                    projectsRepository.save(project.get());
+
+                    return new ResponseEntity<>("true", HttpStatus.OK);
+                } else {
+                    System.out.println("nu e la follow");
+                    if (help_pls) {
+                        System.out.println("exista deja2");
+                        project.get().getTasks().get(index_task).getSolves().remove(index_solve);
+                    }
+                    autoSolve.setStatus(false);
+                    solves.add(autoSolve);
+                    project.get().getTasks().get(index_task).setSolves(solves);
+                    projectsRepository.save(project.get());
+                    return new ResponseEntity<>("false", HttpStatus.OK);
+                }
+            } else {
+                System.out.println("ayaye");
+                return ResponseEntity.ok("false");
             }
         }
         return ResponseEntity.ok("false");
