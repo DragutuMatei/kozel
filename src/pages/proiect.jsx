@@ -11,6 +11,7 @@ import Side from "../components/Side";
 import { MdBarChart } from "react-icons/md";
 import axios_config from "../utils/AxiosConfig";
 import { projects } from "../utils/Links";
+import { isRegisterWithTwitter } from "../utils/Poropescovici";
 
 function Project({ user }) {
   const { id } = useParams();
@@ -63,9 +64,11 @@ function Project({ user }) {
   function handleUsernameChange(e) {
     setxUsername(e.target.value);
   }
+  const isTwitter = isRegisterWithTwitter();
 
   const [msg, setMsg] = useState("");
   const sendSolve = async () => {
+    console.log(task.type)
     if (task.type == "other") {
       await axios_config
         .post(projects + `/${proiect.id}/${taskIndex}/addOtherSolve`, {
@@ -110,7 +113,7 @@ function Project({ user }) {
           console.log(res);
           setMsg("To be verified!");
         });
-    } else if (task.type = "follow") {
+    } else if (task.type == "follow") {
       await axios_config
       .get(
         `/projects/check-user-subscribed/${localStorage.getItem(
@@ -121,7 +124,7 @@ function Project({ user }) {
       )
       .then((res) => {
         console.log(res);
-        if (res.data.following) setMsg("Validated!");
+        if (res.data) setMsg("Validated!");
         else setMsg("Not validated!");
      });
     }
@@ -218,37 +221,7 @@ function Project({ user }) {
                   </h4>
                   <h3 className="title">MISSION 🎯</h3>
                   <p className="p1">{task.description}</p>
-                  {/* {proiect.list1 && (
-                    <ol>
-                      {proiect.list1.map((list, i) => {
-                        return (
-                          <li>
-                            <p className="bold_p">{list}</p>
-                          </li>
-                        );
-                      })}
-                    </ol>
-                  )} */}
-                  {/* {task.desc2 && <h3 className="h3">{task.desc2}</h3>}
-                  {task.list2 && (
-                    <ul>
-                      {task.list2.map((list) => {
-                        return (
-                          <li>
-                            <p className="bold_p">{list}</p>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  )} */}
-                  {/* {task.link && (
-                    <a href={task.link} target="_blank" className="green_text">
-                      {task.link.length > 40
-                        ? task.link.slice(0, 40) + "..."
-                        : task.link}
-                    </a>
-                  )} */}
-
+                
                   <div className="long">
                     <h3 className="title" style={{ marginTop: 50 }}>
                       Waiting for validation 📝
@@ -284,7 +257,51 @@ function Project({ user }) {
                           <p className="p1">Not accepted yet</p>
                         )}
                       </>
-                    ) : (
+                    ) : task.type == "follow" ? (<>
+                    
+                        {
+                          isTwitter ? <>
+                          <input
+                            type="text"
+                            id="proof"
+                            placeholder="@x_username"
+                            onChange={handleUsernameChange}
+                            />
+                            <button
+                              className="button but2 claim"
+                              onClick={() => {
+                                sendSolve();
+                              }}
+                            >
+                              <h6 className="h7">Submit</h6>
+                            </button>
+                          </> : <>
+                              <br />
+                          <button
+                              className="button but1"
+                              onClick={async () => {
+                                let a = window.location.pathname.substring(
+                                  1,
+                                  window.location.pathname.length
+                                );
+                                await axios_config
+                                  .get(
+                                    `/projects/oauth2/authorize/normal/twitter/${a}`
+                                  )
+                                  .then(async (res) => {
+                                    console.log(res);
+                                    window.open(res.data, "_blank");
+                                  });
+                              }}
+                            >
+                              <h6 className="h7">Register with Twitter</h6>
+                            </button>
+                              
+                            </>
+                        }
+                        
+                        
+                      </>) : (
                       <>
                         <p className="bold_p">X username</p>
                         {!ok && (
@@ -313,13 +330,7 @@ function Project({ user }) {
                         <br />
                       </>
                     )}{" "}
-                  </div>
-                  {/* <div className="line"></div>{" "}
-                  <p className="p1" style={{ textAlign: "center" }}>
-                    ⚠︎ After completion, it can take up to 10s before your claim
-                    succeeds.
-                  </p>
-                  <h4 className="claim">Claim FS Token</h4> */}
+                  </div> 
                 </div>
                 <div className="right">
                   <h3 className="h3">Reward</h3>

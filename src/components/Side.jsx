@@ -16,7 +16,7 @@ function Side({ user }) {
     //   setMyProjects(res.data);
     // });
   };
-  
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
@@ -54,7 +54,7 @@ function Side({ user }) {
         <TbWorld />
       </Link>
       <div className="linie"></div>
-      <button
+      {/* <button
         onClick={async () => {
           await axios_config
             .get(
@@ -73,8 +73,14 @@ function Side({ user }) {
       </button>
       <button
         onClick={async () => {
+          let a = window.location.pathname.substring(
+            1,
+            window.location.pathname.length
+          );
           await axios_config
-            .get("/projects/oauth2/authorize/normal/twitter")
+            .get(
+              `/projects/oauth2/authorize/normal/twitter/${a}`
+            )
             .then(async (res) => {
               console.log(res);
               window.open(res.data, "_blank");
@@ -82,7 +88,7 @@ function Side({ user }) {
         }}
       >
         click
-      </button>
+      </button> */}
     </nav>
   );
 }
