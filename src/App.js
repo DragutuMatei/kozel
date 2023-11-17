@@ -27,9 +27,12 @@ function App() {
       .get(auth + "/userInfo")
       .then((res) => {
         setUser(res.data);
-        //console.log(typeof res.data);
         if (res.data != "") localStorage.setItem("logged", "true");
-        else localStorage.setItem("logged", "false");
+        else {
+          localStorage.removeItem("oauth_token");
+          localStorage.removeItem("oauth_token_secret");
+          localStorage.setItem("logged", "false");
+        }
       })
       .catch((er) => {
         localStorage.setItem("logged", "false");
@@ -40,6 +43,8 @@ function App() {
     await axios_config.post(auth + "/signout").then((res) => {
       alert("User logged out");
       localStorage.setItem("logged", "false");
+      localStorage.removeItem("oauth_token");
+      localStorage.removeItem("oauth_token_secret");
       setUser("");
     });
   };

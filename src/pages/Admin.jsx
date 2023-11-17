@@ -158,6 +158,13 @@ function Admin({ user }) {
                         <h4 className="buton">
                           <span className="green_text">@{solve.username}</span>
                         </h4>
+                        {taskType != "other" && (
+                          <h4 className="buton">
+                            <span className="green_text">
+                              @{solve.xusername}
+                            </span>
+                          </h4>
+                        )}
                         {taskType == "other" ? (
                           <>
                             <br></br>
