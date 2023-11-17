@@ -31,7 +31,7 @@ import java.util.Optional;
 @CrossOrigin(
         allowCredentials = "true",
 //        origins = "https://fastalaneapp.netlify.app/",
-        origins = "http://localhost:3000",
+        origins = "https://board.fastlane.buzz",
         allowedHeaders = "*",
         maxAge = 3600)
 @RestController

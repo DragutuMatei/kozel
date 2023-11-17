@@ -44,8 +44,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @CrossOrigin(allowCredentials = "true",
-//        origins = "https://fastalaneapp.netlify.app/",
-        origins = "http://localhost:3000", allowedHeaders = "*", maxAge = 3600)
+        origins = "https://board.fastlane.buzz", allowedHeaders = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/projects")
 public class ProjectsController {
@@ -634,7 +633,7 @@ public class ProjectsController {
 ////            System.out.println(oauth_token + oauth_verifier);
 //            System.out.println("================================================================================================================");
 //            System.out.println(jsonData);
-//            responses.sendRedirect("http://localhost:3000&json1=");
+//            responses.sendRedirect("https://board.fastlane.buzz&json1=");
 ////            return new ResponseEntity<>(jsonData, HttpStatus.OK);
 //        } catch (TypeMismatchException e) {
 //            System.out.println("oooooooooooooooooooooooooooooooooooooooooooooooooooo");
@@ -690,7 +689,7 @@ public class ProjectsController {
             String jsonData = response.getBody();
             System.out.println("================================================================================================================");
             System.out.println(jsonData);
-            responses.sendRedirect("http://localhost:3000/" + url_front + "?" + jsonData);
+            responses.sendRedirect("https://board.fastlane.buzz/" + url_front + "?" + jsonData);
         } catch (TypeMismatchException e) {
             System.out.println("oooooooooooooooooooooooooooooooooooooooooooooooooooo");
         } catch (UnirestException e) {
