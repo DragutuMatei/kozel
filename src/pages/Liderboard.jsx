@@ -67,10 +67,10 @@ function Liderboard({ user }) {
 
   // useEffect(() => {
   //   if (completes) {
-  //     //console.log(hasValues(completes))
+  //     ////console.log(hasValues(completes))
   //     // let score = completes.userPoints
   //     Object.keys(score).forEach(index => {
-  //       //console.log(index, score[index])
+  //       ////console.log(index, score[index])
   //     })
   //   }
   // }, [completes])
@@ -167,7 +167,7 @@ function Liderboard({ user }) {
           <div className="board">
             {hasValues(completes) &&
               scores.map((index, place) => {
-                //console.log(completes)
+                ////console.log(completes)
                 return (
                   <>
                     <div className="om">

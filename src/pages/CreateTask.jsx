@@ -120,7 +120,7 @@ function CreateTask({ user }) {
   };
 
   useEffect(() => {
-    //console.log(user, typeof user);
+    ////console.log(user, typeof user);
     // if (typeof user == "object") {
     //   navigate("/");
     // }

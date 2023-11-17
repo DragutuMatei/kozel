@@ -27,7 +27,7 @@ class Afi {
         }
       });
     } catch (e) {
-      // //console.log(`[AXIOS ERROR]: ${e}`)
+      // ////console.log(`[AXIOS ERROR]: ${e}`)
       console.warn(`[AXIOS ERROR]: ${e}`);
     }
   };
@@ -45,7 +45,7 @@ class Afi {
         })
         .then((res) => {
           if (this.debug) {
-            //console.log(`[AXIOS DEBUG]: ${res.data}`)
+            ////console.log(`[AXIOS DEBUG]: ${res.data}`)
           }
         });
     } catch (e) {
@@ -66,7 +66,7 @@ class Afi {
         .post(url, data, { headers: this._headers })
         .then((res) => {
           if (this.debug) {
-            //console.log(`[AXIOS DEBUG]: ${res.data}`)
+            ////console.log(`[AXIOS DEBUG]: ${res.data}`)
           }
         });
     } catch (e) {

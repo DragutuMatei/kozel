@@ -49,11 +49,11 @@ function Home({ logout, user }) {
         await axios_config
           .get(projects + `/getByUser/${user.id}`)
           .then((res) => {
-            //console.log(res.data);
+            ////console.log(res.data);
             setMyProjects(res.data);
           })
           .catch((err) => {
-            //console.log(err);
+            ////console.log(err);
           });
     };
     const getAll = async () => {
@@ -64,12 +64,12 @@ function Home({ logout, user }) {
           setCardCategoryList(res.data);
         })
         .catch((err) => {
-          //console.log(err);
+          ////console.log(err);
         });
     };
 
     if (localStorage.getItem("logged") == "true") {
-      //console.log("ada");
+      ////console.log("ada");
       getMy();
     }
     getAll();
@@ -97,8 +97,6 @@ function Home({ logout, user }) {
       setMyProjects((old) => old.filter((pr) => pr.id != id));
     });
   };
-
-
 
   return (
     <>

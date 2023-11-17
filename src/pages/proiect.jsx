@@ -26,15 +26,15 @@ function Project({ user }) {
     setTaskIndex(index);
     setTask(task);
     setOk(false);
-    //console.log(task);
+    ////console.log(task);
     setDisplay(true);
-    //console.log(task.solves.length);
-    //console.log(ok);
+    ////console.log(task.solves.length);
+    ////console.log(ok);
     for (let i = 0; i < task.solves.length; i++) {
       const element = task.solves[i];
       if (element.username == user.username) {
         setOk(element.accept);
-        //console.log("=-============", element.accept);
+        ////console.log("=-============", element.accept);
       }
     }
   };
@@ -68,7 +68,7 @@ function Project({ user }) {
 
   const [msg, setMsg] = useState("");
   const sendSolve = async () => {
-    console.log(task.type)
+    //console.log(task.type)
     if (task.type == "other") {
       await axios_config
         .post(projects + `/${proiect.id}/${taskIndex}/addOtherSolve`, {
@@ -78,7 +78,7 @@ function Project({ user }) {
           img: proof,
         })
         .then((res) => {
-          //console.log(res.data);
+          ////console.log(res.data);
           if (res.data) setMsg("Proof submited!");
           else setMsg("Proof not submited!");
         })
@@ -95,7 +95,7 @@ function Project({ user }) {
           }
         )
         .then((res) => {
-          //console.log(res.data);
+          ////console.log(res.data);
           if (res.data) setMsg("Validated!");
           else setMsg("Not validated!");
         })
@@ -110,23 +110,23 @@ function Project({ user }) {
           username: user.username,
         })
         .then((res) => {
-          console.log(res);
+          //console.log(res);
           setMsg("To be verified!");
         });
     } else if (task.type == "follow") {
       await axios_config
-      .get(
-        `/projects/check-user-subscribed/${localStorage.getItem(
-          "oauth_token"
-        )}/${localStorage.getItem(
-          "oauth_token_secret"
-        )}/${xUsername}/${user.username}/${proiect.id}/${taskIndex}`
-      )
-      .then((res) => {
-        console.log(res);
-        if (res.data) setMsg("Validated!");
-        else setMsg("Not validated!");
-     });
+        .get(
+          `/projects/check-user-subscribed/${localStorage.getItem(
+            "oauth_token"
+          )}/${localStorage.getItem("oauth_token_secret")}/${xUsername}/${
+            user.username
+          }/${proiect.id}/${taskIndex}`
+        )
+        .then((res) => {
+          //console.log(res);
+          if (res.data) setMsg("Validated!");
+          else setMsg("Not validated!");
+        });
     }
   };
 
@@ -149,17 +149,17 @@ function Project({ user }) {
   // }, []);
 
   const getProject = async () => {
-    //console.log("asdad");
+    ////console.log("asdad");
     await axios_config.get(projects + `/getProject/${id}`).then(async (res) => {
       setProiect(res.data);
       if (res.data.user_id == user.id) {
         setIsAdmin(true);
         setIsPresent(true);
-        //console.log("asddddddddddddddddddd");
+        ////console.log("asddddddddddddddddddd");
       } else
         await axios_config.get(projects + `/${id}/getUsers`).then((res) => {
-          //console.log("ooooooooooooooooooo");
-          //console.log(res.data);
+          ////console.log("ooooooooooooooooooo");
+          ////console.log(res.data);
           if (res.data.length != 0) {
             if (res.data != false)
               res.data.forEach((users) => {
@@ -174,7 +174,7 @@ function Project({ user }) {
 
   useEffect(() => {
     getProject();
-    //console.log("---------------------------------------------------");
+    ////console.log("---------------------------------------------------");
   }, [, id, window, user]);
 
   const handleTweetButtonClick = (text) => {
@@ -221,7 +221,7 @@ function Project({ user }) {
                   </h4>
                   <h3 className="title">MISSION 🎯</h3>
                   <p className="p1">{task.description}</p>
-                
+
                   <div className="long">
                     <h3 className="title" style={{ marginTop: 50 }}>
                       Waiting for validation 📝
@@ -257,15 +257,15 @@ function Project({ user }) {
                           <p className="p1">Not accepted yet</p>
                         )}
                       </>
-                    ) : task.type == "follow" ? (<>
-                    
-                        {
-                          isTwitter ? <>
-                          <input
-                            type="text"
-                            id="proof"
-                            placeholder="@x_username"
-                            onChange={handleUsernameChange}
+                    ) : task.type == "follow" ? (
+                      <>
+                        {isTwitter ? (
+                          <>
+                            <input
+                              type="text"
+                              id="proof"
+                              placeholder="@x_username"
+                              onChange={handleUsernameChange}
                             />
                             <button
                               className="button but2 claim"
@@ -275,9 +275,11 @@ function Project({ user }) {
                             >
                               <h6 className="h7">Submit</h6>
                             </button>
-                          </> : <>
-                              <br />
-                          <button
+                          </>
+                        ) : (
+                          <>
+                            <br />
+                            <button
                               className="button but1"
                               onClick={async () => {
                                 let a = window.location.pathname.substring(
@@ -289,19 +291,17 @@ function Project({ user }) {
                                     `/projects/oauth2/authorize/normal/twitter/${a}`
                                   )
                                   .then(async (res) => {
-                                    console.log(res);
+                                    //console.log(res);
                                     window.open(res.data, "_blank");
                                   });
                               }}
                             >
                               <h6 className="h7">Register with Twitter</h6>
                             </button>
-                              
-                            </>
-                        }
-                        
-                        
-                      </>) : (
+                          </>
+                        )}
+                      </>
+                    ) : (
                       <>
                         <p className="bold_p">X username</p>
                         {!ok && (
@@ -330,7 +330,7 @@ function Project({ user }) {
                         <br />
                       </>
                     )}{" "}
-                  </div> 
+                  </div>
                 </div>
                 <div className="right">
                   <h3 className="h3">Reward</h3>

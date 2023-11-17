@@ -61,9 +61,9 @@ function Login({ user, setUser }) {
       } else {
         sign();
       }
-      //console.log(wallet);
+      ////console.log(wallet);
     } catch (error) {
-      //console.log("error ", error);
+      ////console.log("error ", error);
     }
   };
 
@@ -75,7 +75,7 @@ function Login({ user, setUser }) {
     setAuthenticating(true);
     setError(null);
     let account;
-    //console.log(wallet);
+    ////console.log(wallet);
 
     let web;
     if (wallet) {
@@ -85,14 +85,14 @@ function Login({ user, setUser }) {
       });
     }
 
-    //console.log(account);
+    ////console.log(account);
     setAccount(account);
     if (account) {
       try {
         await axios_config
           .get(auth + `/challenge/${username}/${account}`)
           .then(async (res) => {
-            //console.log(res.data);
+            ////console.log(res.data);
             // if (res.status === 401) {
             //   throw new Error("This address is not registered");
             // }
@@ -113,7 +113,7 @@ function Login({ user, setUser }) {
               .then((res) => {
                 setUser(res.data);
                 localStorage.setItem("logged", "true");
-                //console.log(res.data);
+                ////console.log(res.data);
                 navigate("/");
               })
               .catch((err) => {

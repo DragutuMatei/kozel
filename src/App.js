@@ -19,7 +19,7 @@ function App() {
   const [user, setUser] = useState("");
 
   // useEffect(() => {
-  //   //console.log(user);
+  //   ////console.log(user);
   // }, [user]);
 
   useEffect(() => {

@@ -91,7 +91,7 @@ function Admin({ user }) {
         task_id: taskID,
       })
       .then(async (res) => {
-        //console.log(res);
+        ////console.log(res);
         let tasks = proiect.tasks.filter((task) => task.id != taskID);
         setProiect({ ...proiect, tasks: tasks });
       });
@@ -116,7 +116,7 @@ function Admin({ user }) {
         decide: decisionBoolean,
       })
       .then((res) => {
-        console.log("res", res);
+        //console.log("res", res);
         if (res.data != false) setSolves(res.data);
       })
       .catch((e) => {

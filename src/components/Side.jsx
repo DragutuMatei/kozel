@@ -12,7 +12,7 @@ function Side({ user }) {
 
   const getMy = async () => {
     // await axios_config.get(projects + `/getByUser/${user.id}`).then((res) => {
-    //   //console.log("assssssssssssssssssssssssssssssssssssssss", res.data);
+    //   ////console.log("assssssssssssssssssssssssssssssssssssssss", res.data);
     //   setMyProjects(res.data);
     // });
   };
@@ -65,7 +65,7 @@ function Side({ user }) {
               )}/Matei17078538/{username}/{project_id}/{index_task}`
             )
             .then((res) => {
-              console.log(res);
+              //console.log(res);
             });
         }}
       >
@@ -82,7 +82,7 @@ function Side({ user }) {
               `/projects/oauth2/authorize/normal/twitter/${a}`
             )
             .then(async (res) => {
-              console.log(res);
+              //console.log(res);
               window.open(res.data, "_blank");
             });
         }}

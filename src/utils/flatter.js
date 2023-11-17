@@ -21,11 +21,11 @@ export function calculateUserPoints(extractedTasks) {
     task.solves.forEach((solve) => {
       const username = solve.username;
       let accept = false;
-      console.log(
-        typeof solve.accept,
-        "==================",
-        typeof solve.status
-      );
+      //console.log(
+        // typeof solve.accept,
+        // "==================",
+        // typeof solve.status
+      // );
       if (solve.accept === true || solve.accept === false) {
         accept = solve.accept;
       }
